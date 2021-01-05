@@ -13,14 +13,13 @@ education:
   - course: BS in Materials Science and Engineering
     institution: Michigan Technological University
     year: 2007
-title: Kevin G. Field
 email: "kgfield@umich.edu"
 interests:
 - Radiation Effects
 - Advanced Alloys
 - Novel Manufacturing & Characterization
 - Data Analytics
-name: Kevin G. Field
+title: Kevin G. Field
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"
