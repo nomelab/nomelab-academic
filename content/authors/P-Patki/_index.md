@@ -7,10 +7,10 @@ education:
   - course: PhD in Materials Science and Engineering
     institution: Purdue University - West Lafayette
     year: 2020
-  - course: MS in Materials Science and Engineering
+  - course: MS in Nuclear Engineering
     institution: Purdue University - West Lafayette
     year: 2018
-  - course: BS in Materials Science and Engineering
+  - course: BS in Chemical Engineering
     institution: University of Pune - India
     year: 2016
 email: "patkipv@umich.edu"
