@@ -1,12 +1,12 @@
 ---
 # Display name
-title: Nelson Bighetti
+title: Kevin G. Field
 
 # Is this the primary user of the site?
 superuser: true
 
 # Role/position/tagline
-role: Professor of Artificial Intelligence
+role: Principal Investigators
 
 # Organizations/Affiliations to show in About widget
 organizations:
@@ -59,19 +59,15 @@ social:
 # Link to a PDF of your resume/CV.
 # To use: copy your resume to `static/media/resume.pdf`, enable `ai` icons in `params.toml`, 
 # and uncomment the lines below.
-# - icon: cv
-#   icon_pack: ai
-#   link: media/resume.pdf
+ - icon: cv
+   icon_pack: ai
+   link: files/docs/CV-KGF-2020.pdf
 
 # Enter email to display Gravatar (if Gravatar enabled in Config)
 email: ""
 
 # Highlight the author in author lists? (true/false)
-highlight_name: false
+highlight_name: true
 ---
 
-Nelson Bighetti is a professor of artificial intelligence at the Stanford AI Lab. His research interests include distributed robotics, mobile computing and programmable matter. He leads the Robotic Neurobiology group, which develops self-reconfiguring robots, systems of self-organizing robots, and mobile sensor networks.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.
-
-{{< icon name="download" pack="fas" >}} Download my {{< staticref "media/demo_resume.pdf" "newtab" >}}resumé{{< /staticref >}}.
+Dr. Kevin Field is an Associate Professor in the Nuclear Engineering and Radiological Sciences department at University of Michigan where his research specializes in alloy development and radiation effects in ferrous and non-ferrous alloys. His active research interests include advanced electron microscopy and scattering-based characterization techniques, additive/advanced manufacturing for nuclear materials, and the application of machine/deep learning techniques for advanced innovation in characterization and development of materials systems. Prof. Field moved to University of Michigan in 2019 after nearly seven years at Oak Ridge National Laboratory where he first started as an Alvin M. Weinberg Fellow and left at the level of Staff Scientist. Prof. Field has presented and published numerous manuscripts on radiation effects in various material systems relevant for nuclear power generation including irradiated concrete performance, deformation mechanisms in irradiated steels, and radiation tolerance of enhanced accident tolerant fuel forms. Dr. Field received his B.S. (2007) from Michigan Technological University in Materials Science & Engineering and his M.S. (2009) and Ph.D. (2012) from the University of Wisconsin – Madison in Materials Science with a focus on segregation phenomena in ion and neutron irradiated ferrous-based alloys. Dr. Field’s work has been recognized through several avenues including receiving the prestigious Alvin M. Weinberg Fellowship from ORNL in 2013 and being awarded the UT-Battelle Award for Early Career Researcher in Science and Technology in 2018. 
