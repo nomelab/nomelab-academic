@@ -1,74 +1,51 @@
 ---
-# Display name
-title: Kevin G. Field
-
-# Is this the primary user of the site?
-superuser: true
-
-# Role/position/tagline
-role: Associate Professor
-
-# Organizations/Affiliations to show in About widget
-organizations:
-- name: Stanford University
-  url: https://www.stanford.edu/
-
-# Short bio (displayed in user profile at end of posts)
-bio: My research interests include distributed robotics, mobile computing and programmable matter.
-
-# Interests to show in About widget
-interests:
-- Artificial Intelligence
-- Computational Linguistics
-- Information Retrieval
-
-# Education to show in About widget
+authors:
+- admin
+bio: My research interests include alloy development, radiation effects, advanced characterization, and data analytics
 education:
   courses:
-  - course: PhD in Artificial Intelligence
-    institution: Stanford University
+  - course: PhD in Materials Science
+    institution: University of Wisconsin - Madison
     year: 2012
-  - course: MEng in Artificial Intelligence
-    institution: Massachusetts Institute of Technology
+  - course: MS in Materials Science
+    institution: University of Wisconsin - Madison
     year: 2009
-  - course: BSc in Artificial Intelligence
-    institution: Massachusetts Institute of Technology
-    year: 2008
-
-# Social/Academic Networking
-# For available icons, see: https://sourcethemes.com/academic/docs/page-builder/#icons
-#   For an email link, use "fas" icon pack, "envelope" icon, and a link in the
-#   form "mailto:your-email@example.com" or "/#contact" for contact widget.
+  - course: BS in Materials Science and Engineering
+    institution: Michigan Technological University
+    year: 2007
+email: "kgfield@umich.edu"
+interests:
+- Radiation Effects
+- Advanced Alloys
+- Novel Manufacturing & Characterization
+- Data Analytics
+name: Kevin G. Field
+organizations:
+- name: Nuclear Engineering and Radiological Sciences
+  url: "https://ners.engin.umich.edu/"
+- name: University of Michigan
+  url: "https://umich.edu/"
+role: Associate Professor
 social:
 - icon: envelope
   icon_pack: fas
-  link: '/#contact'
-- icon: twitter
+  link: '#contact'
+- icon: linkedin-in
   icon_pack: fab
-  link: https://twitter.com/GeorgeCushen
-- icon: graduation-cap  # Alternatively, use `google-scholar` icon from `ai` icon pack
-  icon_pack: fas
-  link: https://scholar.google.co.uk/citations?user=sIwtMXoAAAAJ
+  link: https://www.linkedin.com/in/kevin-field-5961028/
+- icon: google-scholar
+  icon_pack: ai
+  link: https://scholar.google.com/citations?user=B-Faw2wAAAAJ&hl=en
+- icon: orcid
+  icon_pack: ai
+  link: https://orcid.org/0000-0002-3105-076X
 - icon: github
   icon_pack: fab
-  link: https://github.com/gcushen
-- icon: linkedin
-  icon_pack: fab
-  link: https://www.linkedin.com/
-
-# Link to a PDF of your resume/CV.
-# To use: copy your resume to `static/media/resume.pdf`, enable `ai` icons in `params.toml`, 
-# and uncomment the lines below.
- - icon: cv
-   icon_pack: ai
-   link: files/docs/CV-KGF-2020.pdf
-
-# Enter email to display Gravatar (if Gravatar enabled in Config)
-email: ""
-
-# Highlight the author in author lists? (true/false)
-highlight_name: true
-
+  link: https://github.com/
+- icon: cv
+  icon_pack: ai
+  link: "files/docs/CV-KGF-2020.pdf"
+superuser: true
 user_groups:
 - Principal Investigators
 ---
