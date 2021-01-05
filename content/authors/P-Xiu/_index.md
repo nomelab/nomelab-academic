@@ -15,7 +15,7 @@ interests:
 - Radiation Effects in Advanced Alloys
 - Advanced Characterization 
 - Mechanical Behaviors of Irradiated Materials
-name: Pengyuan Xiu
+title: Pengyuan Xiu
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

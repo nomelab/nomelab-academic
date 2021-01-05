@@ -11,7 +11,7 @@ email: "epolsell@umich.eduu"
 interests:
 - Radiation Effects
 - Advanced Nuclear Materials
-name: Ethan Polselli
+title: Ethan Polselli
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

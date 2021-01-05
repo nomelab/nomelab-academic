@@ -14,7 +14,7 @@ interests:
 - Computational Physics
 - Advanced Reactors
 - Nuclear Materials
-name: Steven Chen
+title: Steven Chen
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

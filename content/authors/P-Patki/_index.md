@@ -19,7 +19,7 @@ interests:
 - Characterization
 - Nanostructured Alloys
 - Nanomechanical Testing
-name: Priyam Patki
+title: Priyam Patki
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

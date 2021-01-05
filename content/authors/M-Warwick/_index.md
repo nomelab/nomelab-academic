@@ -13,7 +13,7 @@ interests:
 - Advanced nuclear materials
 - Superalloy development for reactor applications
 - Reactor safety analysis
-name: Mackenzie Warwick
+title: Mackenzie Warwick
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

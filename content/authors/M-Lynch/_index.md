@@ -19,7 +19,7 @@ interests:
 - Machine Learning 
 - Radiation Effects
 - Molten Salt Reactors 
-name: Matthew Lynch
+title: Matthew Lynch
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

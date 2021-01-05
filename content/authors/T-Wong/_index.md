@@ -13,7 +13,7 @@ interests:
 - Fusion \& Plasma-Facing Materials
 - Computational Materials Science
 - Machine Learning
-name: Tommy (Chun Yin) Wong
+title: Tommy (Chun Yin) Wong
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

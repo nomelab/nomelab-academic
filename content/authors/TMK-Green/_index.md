@@ -18,7 +18,7 @@ interests:
 - Additive Manufacturing
 - Radiation Effects
 - Advanced Characterization
-name: T.M. Kelsy Green
+title: T.M. Kelsy Green
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"

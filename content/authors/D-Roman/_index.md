@@ -13,7 +13,7 @@ interests:
 - Advanced Reactors Systems 
 - Alternative Energy Systems
 - Combustion Engines
-name: Daniel Román Torres
+title: Daniel Román Torres
 organizations:
 - name: Mechanical Engineering
   url: "https://me.engin.umich.edu/"

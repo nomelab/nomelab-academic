@@ -12,7 +12,7 @@ interests:
 - Advanced Nuclear Materials
 - Advanced Reactor Design
 - Reactor Fuels
-name: Gabriella Bruno
+title: Gabriella Bruno
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"
