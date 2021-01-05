@@ -13,6 +13,7 @@ education:
   - course: BS in Materials Science and Engineering
     institution: Michigan Technological University
     year: 2007
+title: Kevin G. Field
 email: "kgfield@umich.edu"
 interests:
 - Radiation Effects
