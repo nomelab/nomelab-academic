@@ -26,7 +26,7 @@ The Nuclear Engineering and Radiological Sciences Graduate Program is consistent
 
 <strong><u>Frequently Asked Questions from Prospective Graduate Students</strong></u><br>
 <strong>Q:</strong> <i>Are you taking on new graduate students in the Fall?</i><br>
-<strong>A:</strong> Yes! We typically welcome 1 graduate students in the Fall term of each year.
+<strong>A:</strong> Yes! We typically welcome 1 graduate student in the Fall term of each year.
 
 <strong>Q:</strong> <i>What departments do the group members come from?</i><br>
 <strong>A:</strong> The majority of our PhD students come with a background in Nuclear Engineering or Materials Science \& Engineering. However, due to the interdisciplinary nature of our research, we also have graduate and undergraduate students from Mechanical Engineering, Electrical Engineering, Physics, and Computer Science.
