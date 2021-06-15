@@ -4,7 +4,7 @@ authors:
 bio: My research interests include advanced nuclear materials, advanced reactor design, and nuclear reactor fuels.
 education:
   courses:
-    - course: MS in Nuclear Engineering and Radiological Sciences
+  - course: MS in Nuclear Engineering and Radiological Sciences
     institution: University of Michigan
     year: 2021
   - course: BS in Nuclear Engineering
