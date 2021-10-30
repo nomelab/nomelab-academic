@@ -30,3 +30,16 @@
   to = "https://147cb974de21f42c41356f540888109e.balena-devices.com/login"
   status = 301
   force = false
+
+
+[[redirects]]
+  from = "/theiagrab"
+  to = "https://147cb97.local:7777/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/theiawatch"
+  to = "http://147cb97.local/d/rNByxnSnk/inference?orgId=2"
+  status = 301
+  force = false
