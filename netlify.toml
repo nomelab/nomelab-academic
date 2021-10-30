@@ -24,3 +24,9 @@
   for = "index.xml"
   [headers.values]
     Content-Type = "application/rss+xml"
+
+[[redirects]]
+  from = "/theiascope"
+  to = "/https://147cb974de21f42c41356f540888109e.balena-devices.com/login"
+  status = 301
+  force = false
