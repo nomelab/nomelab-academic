@@ -26,20 +26,20 @@
     Content-Type = "application/rss+xml"
 
 [[redirects]]
-  from = "/theiascope"
+  from = "/watch"
   to = "https://147cb974de21f42c41356f540888109e.balena-devices.com/login"
   status = 301
   force = false
 
 
 [[redirects]]
-  from = "/theiagrab"
+  from = "/grab"
   to = "https://147cb97.local:7777/"
   status = 301
   force = false
 
 [[redirects]]
-  from = "/theiawatch"
+  from = "/data"
   to = "http://147cb97.local/d/rNByxnSnk/inference?orgId=2"
   status = 301
   force = false
