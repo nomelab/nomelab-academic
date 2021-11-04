@@ -11,7 +11,7 @@ email: "juuls@umich.edu@umich.edu"
 interests:
 - Advanced Alloys
 - Radiation Effects
-title: J. Schoenwald
+title: Julianna Schoenwald
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"
