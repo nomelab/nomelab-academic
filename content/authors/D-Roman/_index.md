@@ -26,7 +26,7 @@ social:
   link: 'mailto:danirmn@umich.edu'
 superuser: false
 user_groups:
-- Undergraduate Alumni
+- Alumni
 ---
 
 Daniel Roman is an undergraduate student in the Mechanical Engineering department at the University of Michigan with interests in alternative energy systems, advanced nuclear systems, and nuclear fission. Additionally, Daniel was an intern at the Walter E Lay AutoLab at the University of Michigan during the summer of 2019. test

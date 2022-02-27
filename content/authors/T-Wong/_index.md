@@ -37,7 +37,7 @@ social:
   icon_pack: fas
   link: https://tommycwong.wordpress.com/
 user_groups:
-- Undergraduate Alumni
+- Alumni
 ---
 
 Tommy Wong is an undergraduate student in his senior year in the Department of Nuclear Engineering and Radiological Sciences at the University of Michigan. His research interests include radiation effects in both nuclear fission and fusion materials, as well as the application of machine learning in both experimental and computational materials science research. Tommy has had prior research experience in deep learning through the Nuclear Engineering Science Laboratory Synthesis program at the Oak Ridge National Laboratory and the Biomedical and Life Sciences Summer Fellowship at the University of Michigan Medical School. In his free time, Tommy is an avid chorister and he currently sings with the University of Michigan Men's Glee Club.
