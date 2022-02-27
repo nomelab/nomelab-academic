@@ -30,7 +30,7 @@ social:
   link: https://www.linkedin.com/in/steven-chen-56b92a177/
 superuser: false
 user_groups:
-- Alumni
+- Undergraduate Alumni
 ---
 
 Steven Chen is a senior undergraduate student in the Nuclear Engineering and Radiological Sciences department at the University of Michigan with interests in thermal hydraulics for nuclear reactors, advanced reactor designs, and irradiation effects on materials. Additionally, Steven was an intern in the Advanced Nuclear Technology department at the Electric Power Research Institute in Charlotte, N.C., during the summer of 2019 and 2020. Lastly, Steven is interested in obtaining a full-time position as a nuclear engineer starting in May, 2021.

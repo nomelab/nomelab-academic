@@ -47,7 +47,7 @@ social:
   link: "files/docs/CV-PP-2021.pdf"
 superuser: false
 user_groups:
-- Post Docs
+- Post Doc Alumni
 ---
 
 Dr. Priyam Patki is a postdoctoral research fellow in the Nuclear Engineering and Radiological Sciences department at University of Michigan, Ann Arbor in Dr. Field's research group. His active research includes radiation effects in materials, development of advanced alloys for nuclear applications, advanced characterization and nanomechanical testing. His doctorate research on nanocrystalline Cu-Ta alloy system included characterizing radiation damage using TEM and APT techniques as well as alteration of the nanostructure of the material using nanomechanical testing to alleviate the effects of irradiation in the material. Dr. Patki has also received the Magoon Award for Excellence in teaching in 2017 at Purdue University. 
