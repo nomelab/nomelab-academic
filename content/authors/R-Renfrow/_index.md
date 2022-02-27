@@ -27,7 +27,7 @@ social:
 - icon: linkedin-in
   icon_pack: fab
   link: https://www.linkedin.com/in/robbyrenfrow/
- - icon: cv
+- icon: cv
   icon_pack: ai
   link: "files/docs/CV-RR-2022.pdf"
 superuser: false
