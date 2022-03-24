@@ -1,8 +1,8 @@
 ---
-date: "2019-10-06"
+date: "2022-03-23"
 diagram: true
 image:
-  caption: 'NOME Group, Winter 2020, MIBL'
+  caption: 'NOME Group, Spring 2022, PML'
   placement: 1
 math: true
 title: Are you interested in joining us?
