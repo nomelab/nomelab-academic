@@ -4,7 +4,7 @@ authors:
 bio: I am interested in radiation effects and advanced characterization of nuclear materials.
 education:
   courses:
-   - course: PhD in Nuclear Engineering and Radiological Sciences
+  - course: PhD in Nuclear Engineering and Radiological Sciences
     institution: University of Michigan - Ann Arbor
     year: 2022
   - course: MS in Nuclear Engineering and Radiological Sciences
