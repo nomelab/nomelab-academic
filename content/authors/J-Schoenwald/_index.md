@@ -27,7 +27,7 @@ social:
   link: www.linkedin.com/in/julianna-schoenwald-428000225
 superuser: false
 user_groups:
-- Undergraduates
+- Alumni
 ---
 
 I am an undergraduate student at the University of Michigan majoring in Nuclear Engineering and minoring in Materials Science. I am particularly interested in advanced alloy development and characterization as well as the study of conditions that cause degradation or failure in reactor components. My goal is to contribute tot he realization of advanced fission and fusion reactor concepts. 
