@@ -9,6 +9,7 @@ slides:
 summary: Develop and maintain the world leading resource of FeCrAl materials properties for nuclear power applications
 tags:
 - Radiation Effects
+- Finished Project
 title: FeCrAl Handbook Development
 url_code: ""
 url_pdf: ""

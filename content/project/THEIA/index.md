@@ -6,9 +6,10 @@ image:
   focal_point: Smart
 links:
 slides: 
-summary: Applications of edge computing and machine learning to automatically identify features in microscopy image
+summary: Applications of edge computing and machine learning to automatically identify features in micrographs
 tags:
-- AM
+- Machine Learning
+- Advanced Characterization
 title: Real-time Microscopy Quantification Using Machine Learning
 url_code: ""
 url_pdf: ""

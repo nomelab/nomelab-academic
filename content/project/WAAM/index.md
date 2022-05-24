@@ -9,6 +9,7 @@ slides:
 summary: Optimizing processing parameters of wire arc additive manufactered nuclear steels.
 tags:
 - AM
+- Finished Project
 title: Wire Arc Additive Manufacturing of Nuclear Steels
 url_code: ""
 url_pdf: ""
