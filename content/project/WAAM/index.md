@@ -6,7 +6,7 @@ image:
   focal_point: Smart
 links:
 slides: 
-summary: Optimizing processing parameters of wire arc additive manufactered nuclear steels.
+summary: Optimizing processing parameters of wire arc additive manufactured nuclear steels.
 tags:
 - AM
 - Finished Project

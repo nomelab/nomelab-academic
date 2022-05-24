@@ -40,6 +40,10 @@ subtitle = "We work at the interface between materials synthesis, advanced chara
   [[content.filter_button]]
     name = "Advanced Characterization"
     tag = "Advanced Characterization"
+    
+  [[content.filter_button]]
+    name = "Completed Programs"
+    tag = "Finished Project"
 
 [design]
   # Choose how many columns the section has. Valid values: 1 or 2.
