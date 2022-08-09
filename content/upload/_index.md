@@ -8,23 +8,6 @@ math: true
 title: Upload your data to contribute towards AI/ML colaborations!
 ---
 
-<style>
-  .forms-studio {
-    position: relative;
-    padding-bottom: 56.25%;
-    overflow: hidden;
-    width: 100%;
-    height: 600px;
-  }
-  .forms-studio iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-</style>
-<div class="forms-studio">
-  <iframe src="https://docs.google.com/forms/d/1IylXAd4_dVFVRy_jz8IZwn7dYh02q4byGfMVrv9vyos/"></iframe>
-</div>
+We use a Google Form to collect data and requires login to G-suite, thus we can not directly embed it into our website. You must follow the link below:
+
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSdul7yZhiwGjuSQ_ZZHlaqrYazDlofdeQ7EwWE_vBrKdggRFQ/viewform?usp=sf_link">Google Form Link</a>!
