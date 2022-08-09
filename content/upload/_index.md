@@ -26,5 +26,5 @@ title: Upload your data to contribute towards AI/ML colaborations!
   }
 </style>
 <div class="forms-studio">
-  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdul7yZhiwGjuSQ_ZZHlaqrYazDlofdeQ7EwWE_vBrKdggRFQ/viewform?usp=sf_link"></iframe>
+  <iframe src="https://docs.google.com/forms/d/1IylXAd4_dVFVRy_jz8IZwn7dYh02q4byGfMVrv9vyos/"></iframe>
 </div>
