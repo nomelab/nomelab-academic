@@ -40,7 +40,7 @@
 
 
 [[redirects]]
-  from = "/test"
+  from = "/upload"
   to = "https://docs.google.com/forms/d/e/1FAIpQLSdul7yZhiwGjuSQ_ZZHlaqrYazDlofdeQ7EwWE_vBrKdggRFQ/viewform?usp=sf_link"
   status = 301
   force = false
