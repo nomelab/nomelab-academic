@@ -38,8 +38,9 @@
   status = 301
   force = false
 
+
 [[redirects]]
-  from = "/data"
-  to = "http://147cb97.local/d/rNByxnSnk/inference?orgId=2"
+  from = "/upload"
+  to = "https://forms.gle/RkQmp8MxADSMPp5k7"
   status = 301
   force = false
