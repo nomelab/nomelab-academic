@@ -1,1 +1,1 @@
-# Redirects from what the browser requests to what we serve/theiascope              /https://147cb974de21f42c41356f540888109e.balena-devices.com/login
+# Redirects from what the browser requests to what we serve/upload              https://docs.google.com/forms/d/e/1FAIpQLSdul7yZhiwGjuSQ_ZZHlaqrYazDlofdeQ7EwWE_vBrKdggRFQ/viewform?usp=sf_link
