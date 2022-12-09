@@ -15,7 +15,7 @@ interests:
 - Defects
 - Metallurgy
 - Radiation Damage
-- Caracterization
+- Characterization
 title: Dr. Charlie Hirst
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
@@ -43,4 +43,3 @@ user_groups:
 
 Dr. Charles A. Hirst (“Charlie”) is a postdoctoral research fellow in the Nuclear Engineering and Radiological Sciences department at University of Michigan, Ann Arbor. His research includes investigating irradiation creep in ferritic-martensitic alloys through accelerator-based experiments, post-irradiation characterization, and long-timescale atomistic simulations. Charlie is also developing the Michigan Ion Beam Laboratory’s multi-beam chamber to enable XY gradients in H and He implantation, thus accelerating the exploration of ion-beam parameters necessary to emulate neutron irradiation. Charlie’s PhD at MIT involved measuring radiation damage through the energy released during defect annealing in metals, through both calorimetry experiments and atomistic simulations. Additionally, during his PhD, Charlie was a Communication Lab Fellow in the Nuclear Science and Engineering department where he coached over 40 students and postdocs to effectively communicate their work through presentations, posters, and journal articles.
 
-/Users/kgfield/Documents/GitHub/nomelab-academic/static/files/docs/Hirst_CV - Charles Hirst.pdf
