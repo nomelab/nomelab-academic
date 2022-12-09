@@ -2,7 +2,7 @@
 date: "2022-03-23"
 diagram: true
 image:
-  caption: 'NOME Group, Spring 2022, PML'
+  caption: 'NOME Group, Fall 2022, PML'
   placement: 1
 math: true
 title: Are you interested in joining us?
