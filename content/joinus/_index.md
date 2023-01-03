@@ -48,7 +48,6 @@ The Nuclear Engineering and Radiological Sciences Graduate Program is consistent
 
 If you have any questions about the graduate program, current projects, or seek references for Prof. Field as a supervisor please contact Prof. Field via <a href="../../#contact">email</a>.
 
-{{< gallery album="groupphotos" >}}
 
 ## Joining as a Postdoctoral Fellow
 
