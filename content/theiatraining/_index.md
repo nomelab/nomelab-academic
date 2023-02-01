@@ -20,5 +20,9 @@ A couple of select files will be used for the training:
 
 #Images
 
+##Cavities
+![Cavity 1](https://www.nomelab.com/files/Cavity1.jpg "Image of cavities in irradiated material")
+<a href="https://www.nomelab.com/files/Cavity1.jpg">Download</a>
+
 
 
