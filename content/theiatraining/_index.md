@@ -5,12 +5,12 @@ image:
   caption: 'NOME Group, Spring 2022, PML'
   placement: 1
 math: true
-title: A database of files for ML integration with the Theiascope
+title: A database of files for ML integration with the Theiascope&trade;
 ---
 
 A couple of select files will be used for the training:
 
-#Weight Files
+# Weight Files
 
 <a href="https://www.nomelab.com/files/YOLOv5s_blackdots">Black Dots</a>: This 1 class weight file was trained to enable detection of black dots and small <111> and <100> loops during 2-beam (g=200) imaging of bcc FeCrAl during in-situ TEM ion irradiations. The details about the database and an analogous YOLOv3 model is outlined <a href="https://doi.org/10.1016/j.commatsci.2021.110560">here</a>.
 
@@ -18,11 +18,35 @@ A couple of select files will be used for the training:
 
 <a href="https://www.nomelab.com/files/YOLOv5s_blackdots">Cavities</a>: This 1 class weight file was trained to enable detection of voids and helium bubbles imaged in bright field defocused condition from ex-situ irradiations. The model has been trained on both fcc and bcc materials that underwent both ion and neutron irradiation. The images must be in the underfocused condition with white contrast in the central portion of the cavities. The details about the database and an analogous Mask R-CNN model is outlined <a href="https://arxiv.org/abs/2208.01460">here</a>.
 
-#Images
+# Images
 
-##Cavities
-![Cavity 1](https://www.nomelab.com/files/Cavity1.jpg "Image of cavities in irradiated material")
+## Cavities
+
+<center>
+![Cavity 1](https://www.nomelab.com/files/Cavity1.jpg "Image of cavities in a irradiated material")
 <a href="https://www.nomelab.com/files/Cavity1.jpg">Download</a>
 
+![Cavity 2](https://www.nomelab.com/files/Cavity2.jpg "Image of cavities in a irradiated material")
+<a href="https://www.nomelab.com/files/Cavity2.jpg">Download</a>
+
+![Cavity 3](https://www.nomelab.com/files/Cavity3.jpg "Image of cavities in a irradiated material")
+<a href="https://www.nomelab.com/files/Cavity3.jpg">Download</a>
+
+</center>
+
+## Black Dots
+
+<center>
+
+![Black Dot 1](https://www.nomelab.com/files/18Cr_TEM2beamimage.jpg "Image of black dots in a irradiated material")
+<a href="https://www.nomelab.com/files/18Cr_TEM2beamimage.jpg">Download</a>
+
+![Black Dot 2](https://www.nomelab.com/files/BlackDots.jpg "Image of black dots in a irradiated material")
+<a href="https://www.nomelab.com/files/BlackDots.jpg">Download</a>
+
+</center>
+
+# Videos
 
 
+<a href="https://drive.google.com/open?id=16hdVyyrEN3a3Tuqqq5euAEFxkLmTbHz4&authuser=kgfield%40umich.edu&usp=drive_fs">Download an in situ video</a>
