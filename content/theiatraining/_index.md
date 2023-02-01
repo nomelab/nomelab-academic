@@ -5,7 +5,7 @@ image:
   caption: 'NOME Group, Spring 2022, PML'
   placement: 1
 math: true
-title: A database of files for ML integration with the Theiascope&trade;
+title: A database of files for ML testing;
 ---
 
 A couple of select files will be used for the training:
