@@ -10,6 +10,9 @@ education:
   - course: BS in Aerospace Engineering
     institution: The Ohio State University
     year: 2022
+  - course: BS in Aerospace Engineering
+    institution: The Ohio State University
+    year: 2022
 email: "tdefranc@umich.edu"
 interests:
 - Advanced Nuclear Materials
