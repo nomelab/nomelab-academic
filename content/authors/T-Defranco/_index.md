@@ -27,12 +27,12 @@ organizations:
   url: "https://umich.edu/"
 role: Graduate Student
 social:
-- icon: envelope
-  icon_pack: fas
-  link: '#contact'
 - icon: linkedin-in
   icon_pack: fab
   link: https://www.linkedin.com/in/tim-defranco-70a2b8175/
+- icon: envelope
+  icon_pack: fas
+  link: 'mailto:tdefranc@umich.edu'
 superuser: false
 user_groups:
 - Grad Students
