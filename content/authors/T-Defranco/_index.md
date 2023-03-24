@@ -1,7 +1,7 @@
 ---
 authors:
 - admin
-bio: My research interests include: advanced nuclear materials, hydrogen storage, nuclear thermal propulsion.
+bio: My research interests include advanced nuclear materials, advanced reactor design, and nuclear reactor fuels.
 education:
   courses:
   - course: MS in Nuclear Engineering and Radiological Sciences
