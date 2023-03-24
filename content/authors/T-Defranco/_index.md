@@ -1,15 +1,18 @@
 ---
 authors:
 - admin
-bio: My research interests include advanced nuclear materials, advanced reactor design, and nuclear reactor fuels.
+bio: My research interests include: advanced nuclear materials, hydrogen storage, nuclear thermal propulsion.
 education:
   courses:
   - course: MS in Nuclear Engineering and Radiological Sciences
     institution: University of Michigan
-    year: 2021
-  - course: BS in Nuclear Engineering
-    institution: Rensselaer Polytechnic Institute - Troy
-    year: 2019
+    year: 2024
+  - course: BS in Aerospace Engineering
+    institution: The Ohio State University
+    year: 2022
+  - course: Minor in Nuclear Engineering
+    institution: The Ohio State University
+    year: 2022
 email: "tdefranc@umich.edu"
 interests:
 - Advanced Nuclear Materials
