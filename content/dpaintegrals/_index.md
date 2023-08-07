@@ -5,15 +5,10 @@ image:
   caption: 'NERS521'
   placement: 1
 math: true
-title: A quick webpage for calculating dpa;
+title: Calculating DPA Cheat Sheet
 ---
 
-
-#NERS521
-
-##Calculating dpa Cheat Sheet
-
-###Displacement cross section integrals
+### Displacement cross section integrals
 
 For simple, hard sphere elastic interactions the maximum energy transfer, $\hat{T}$, is given as,
 
