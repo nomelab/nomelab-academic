@@ -31,4 +31,4 @@ user_groups:
 - Undergraduate
 ---
 
-I am an undergrad at the University of Michigan studying Nuclear Engineering. I am planning to focus on plasma and fusion, but I am also interested in how radiation effects materials. I would like to do research as a profession.
+I am an undergrad at the University of Michigan studying Nuclear Engineering. I am planning to focus on plasma and fusion, but I am also interested in how radiation effects materials. I would like to do research as a profession. test
