@@ -24,7 +24,7 @@ social:
   link: 'mailto:epolsell@umich.edu'
 superuser: false
 user_groups:
-- Undergraduates
+- Grad Students
 ---
 
-Ethan Polselli is an undergraduate student in the department of Nuclear Engineering and Radiological Sciences at the University of Michigan. His interests primarily include radiation effects and advanced nuclear materials.
+Ethan Polselli is a graduate student in the department of Nuclear Engineering and Radiological Sciences at the University of Michigan. His interests primarily include radiation effects and advanced nuclear materials.
