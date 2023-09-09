@@ -29,7 +29,7 @@ social:
   link: https://www.linkedin.com/in/rettg
 superuser: false
 user_groups:
-- Undergraduates
+- Alumni
 ---
 
 Rett Graham is a undergraduate transfer student in the Mechanical Engineering department at the University of Michigan. Some of his many research interests include additive design, engine systems design, machine learning, and data analytics. He has future ambitions of an internship position and continued schooling.

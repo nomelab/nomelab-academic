@@ -1,7 +1,7 @@
 ---
 authors:
 - admin
-bio: My research interests include advanced nuclear materials, advanced reactor design, and nuclear reactor fuels.
+bio: My research interests include metallography, radiation effects, characterization, and alloy manufacturing techniques.
 education:
   courses:
   - course: B.S. Nuclear Engineering
