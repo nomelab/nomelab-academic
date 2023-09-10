@@ -30,6 +30,9 @@ social:
 - icon: envelope
   icon_pack: fas
   link: 'mailto:hamilj@umich.edu'
+- icon: cv
+  icon_pack: ai
+  link: "files/docs/CV-JH-2023.pdf"
 superuser: false
 user_groups:
 - Grad Students

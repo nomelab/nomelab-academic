@@ -9,10 +9,10 @@ education:
     year: 2021
 email: "renfrow@umich.edu"
 interests:
-- Radiation Effects 
-- Advanced Nuclear Materials 
-- Mechanical Behaviors of Irradiated Materials
-- Thorium Fuel Cycle
+- Advanced nuclear reactor structural materials
+- Novel materials characterization techniques
+- Effective research communication
+- Data analytics and visualization
 title: Robert Renfrow
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
@@ -35,6 +35,7 @@ user_groups:
 - Grad Students
 ---
 
-Robert (Robby) Renfrow is a graduate student at the University of Michigan in the Nuclear Engineering and Radiological Sciences Department. Before starting his degree at UM in the Fall of 2021, he obtained his B.S. in Mechanical Engineering from Lipscomb University in Nashville, TN. While there, he gained an interest in nuclear via learning about the thorium fuel cycle in his chemistry class, which sparked his interest in the field and led him to pursue a graduate education in nuclear engineering. 
+Robert (Robby) Renfrow is a PhD student in the Nuclear Engineering and Radiological Sciences (NERS) Department at the University of Michigan where he researches radiation effects in advanced steel alloys. While at UM, Robby’s research has been focused on developing novel in situ S/TEM experimental techniques at the Michigan Ion Beam Laboratory that enable real-time chemical mapping of tailored metallic nanostructures under ion irradiation. Generally, he is interested in advanced electron microscopy characterization methods, effective research communication techniques, and the development of novel materials for the use in advanced fission and fusion energy applications. 
 
-Robby's research is primarily focused on investigating radiation effects in additively manufactured alloys by simulating neutron damage with ions and S/TEM characterization. Generally, he is interested in the development and characterization of advanced materials for the use in advanced non-LWR applications. He is also an advocate for the deployment of advanced nuclear energy and was awarded a policy research fellowship via the Washington Internships for Students of Engineering (WISE) program in the summer of 2021. During the fellowship, he investigated policy issues surrounding the development of advanced modeling and simulation codes for advanced reactor licensing. 
+More broadly, Robby also dedicates efforts to cultivating a welcoming and vibrant community amongst graduate students. In his first year of graduate school, he took over as the Graduate Student Council Chair for the NERS Department and reinstated a team of students that facilitate events focused on promoting a scientifically oriented, inclusive social environment for the entire NERS department. Before arriving at UM in the Fall of 2021, he obtained his BS in Mechanical Engineering from Lipscomb University in Nashville, TN. While there, he gained an interest in clean energy technologies which led him to pursue a graduate education in nuclear engineering. 
+
