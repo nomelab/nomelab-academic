@@ -19,7 +19,7 @@ organizations:
   url: "https://ners.engin.umich.edu/"
 - name: University of Michigan
   url: "https://umich.edu/"
-role: Graduate Student
+role: Undergraduate
 social:
 - icon: linkedin-in
   icon_pack: fab
