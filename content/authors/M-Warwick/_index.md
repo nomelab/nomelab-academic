@@ -1,18 +1,24 @@
 ---
 authors:
 - admin
-bio: My research interests include developing high-temperature, low-activation superalloys for fission and fusion reactor applications.
+bio: My research interests include alloy development, radiation effects, advanced characterization, and data analytics.
 education:
   courses:
+  - course: PhD in Nuclear Engineering and Radiological Sciences 
+    institution: University of Michigan - Ann Arbor
+    year: 2025
+- course: MSE in Nuclear Engineering and Radiological Sciences: Nuclear Materials
+    institution: University of Michigan - Ann Arbor
+    year: 2022
   - course: BSE in Nuclear Engineering and Radiological Sciences and Minor in Physics
     institution: University of Michigan - Ann Arbor
     year: 2020
 email: "mwarwick@umich.edu"
 interests:
-- Advanced fission and fusion reactor design
-- Advanced nuclear materials
-- Superalloy development for reactor applications
-- Reactor safety analysis
+- Radiation Effects in Coupled Extreme Environments
+- Characterization
+- Advanced Nuclear Materials
+- Computational Modeling and Simulations
 title: Mackenzie Warwick
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
@@ -27,9 +33,12 @@ social:
 - icon: linkedin-in
   icon_pack: fab
   link: https://www.linkedin.com/in/mackenzie-warwick-808250141/
+- icon: cv
+  icon_pack: ai
+  link: "files/docs/CV-MW-2023.pdf"
 superuser: true
 user_groups:
 - Grad Students
 ---
 
-Mackenzie Warwick is a graduate student in the Nuclear Engineering and Radiological Sciences department at the University of Michigan, with a focus in developing high-temperature, low-activation superalloys for fission and fusion reactor applications. Mackenzie is also an intern at Idaho National Laboratory researching the feasibility of the isotopic-tailoring of nickel in Inconel 718 for low-activation purposes. Mackenzie is involved in ANS and is the founding President of the WIN student chapter at UM. Additionally, Mackenzie has a strong interest in Japan’s nuclear energy sector: she became interested in nuclear energy after the 2011 Fukushima accident. Mackenzie has 10 years of intermediate experience with Japanese and has visited Japan twice. 
+Mackenzie Warwick is a fourth-year PhD candidate in the Nuclear Engineering and Radiological Sciences department at the University of Michigan, with a focus on ion irradiation creep and material performance in coupled extreme environments. Mackenzie is an intern at Idaho National Laboratory researching crystal plasticity and modeling of creep mechanisms for long-term performance prediction. She has previously researched the technical and economic feasibility of isotopic-tailoring of nickel in Inconel-718 for low-activation purposes as a fusion first-wall candidate material. Mackenzie has a strong interest in Japan’s nuclear energy sector as she became interested in nuclear energy after the 2011 Fukushima Daiichi accident. She has 12 years of intermediate experience with Japanese and has visited Japan three times. When Mackenzie is not in the lab, she is typically running K-12 outreach workshops that she has developed to increase the accessibility of nuclear engineering topics for young students. 
