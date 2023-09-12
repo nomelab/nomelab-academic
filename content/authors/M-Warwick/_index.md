@@ -4,6 +4,12 @@ authors:
 bio: My research interests include alloy development, radiation effects, advanced characterization, and data analytics.
 education:
   courses:
+  - course: PhD in Nuclear Engineering and Radiological Sciences 
+    institution: University of Michigan - Ann Arbor
+    year: 2025
+  - course: MSE in Nuclear Engineering and Radiological Sciences 
+    institution: University of Michigan - Ann Arbor
+    year: 2022
   - course: BSE in Nuclear Engineering and Radiological Sciences and Minor in Physics
     institution: University of Michigan - Ann Arbor
     year: 2020
