@@ -7,7 +7,7 @@ education:
   - course: PhD in Nuclear Engineering and Radiological Sciences 
     institution: University of Michigan - Ann Arbor
     year: 2025
-- course: MSE in Nuclear Engineering and Radiological Sciences: Nuclear Materials
+  - course: MSE in Nuclear Engineering and Radiological Sciences: Nuclear Materials
     institution: University of Michigan - Ann Arbor
     year: 2022
   - course: BSE in Nuclear Engineering and Radiological Sciences and Minor in Physics
