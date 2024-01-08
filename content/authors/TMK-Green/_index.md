@@ -6,7 +6,7 @@ education:
   courses:
   - course: PhD in Nuclear Engineering and Radiological Sciences
     institution: University of Michigan-Ann Arbor
-    year: 2022
+    year: 2023
   - course: MS in Nuclear Engineering and Radiological Sciences
     institution: University of Michigan-Ann Arbor
     year: 2020
@@ -18,7 +18,7 @@ interests:
 - Additive Manufacturing
 - Radiation Effects
 - Advanced Characterization
-title: T.M. Kelsy Green
+title: Dr. T.M. Kelsy Green
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"
@@ -37,7 +37,7 @@ social:
   link: https://orcid.org/0000-0002-8259-6674
 superuser: false
 user_groups:
-- Grad Students
+- Alumni
 ---
 
 T.M. Kelsy Green's research focuses on simulating neutron damage with ions through microstructural and mechanical investigations of irradiated ferritic/martensitic alloys. She also studies novel microstructures created through additive manufacturing and their radiation tolerance. Kelsy is an advocate for nuclear energy and received the Walter Meyer Scholarship for Nuclear Information and Energy Policy in 2018 for her contributions to public awareness and policy.
