@@ -10,7 +10,7 @@ summary: This project aims at developing a mechanistic understanding on the effe
 tags:
 - Machine Learning
 - Advanced Characterization
-title: Developing critical insights on the effects of Mo on α^' precipitation and dislocation loop formation in FeCrAl alloys
+title: Developing critical insights on the effects of Mo on alpha prime precipitation and dislocation loop formation in FeCrAl alloys
 url_code: ""
 url_pdf: ""
 url_slides: ""
