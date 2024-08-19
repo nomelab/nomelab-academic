@@ -7,6 +7,9 @@ education:
   - course: BS in Mechanical Engineering
     institution: Lipscomb University
     year: 2021
+  - course: MS in Nuclear Engineering and Radiological Sciences
+    institution: University of Michigan
+    year: 2024
 email: "renfrow@umich.edu"
 interests:
 - Advanced nuclear reactor structural materials
@@ -32,7 +35,7 @@ social:
   link: "files/docs/CV-RR-2022.pdf"
 superuser: false
 user_groups:
-- Grad Students
+- Alumni
 ---
 
 Robert (Robby) Renfrow is a PhD student in the Nuclear Engineering and Radiological Sciences (NERS) Department at the University of Michigan where he researches radiation effects in advanced steel alloys. While at UM, Robby’s research has been focused on developing novel in situ S/TEM experimental techniques at the Michigan Ion Beam Laboratory that enable real-time chemical mapping of tailored metallic nanostructures under ion irradiation. Generally, he is interested in advanced electron microscopy characterization methods, effective research communication techniques, and the development of novel materials for the use in advanced fission and fusion energy applications. 
