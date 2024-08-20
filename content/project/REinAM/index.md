@@ -10,6 +10,7 @@ summary: Use MIBL and MC<sup>2</sup> to conduct irradiation and post-irradiation
 tags:
 - AM
 - Radiation Effects
+- Finished Project
 title: Radiation Effects in Additive Manufactured Steels
 url_code: ""
 url_pdf: ""

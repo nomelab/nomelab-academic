@@ -10,6 +10,7 @@ summary: Applications of edge computing and machine learning to automatically id
 tags:
 - Machine Learning
 - Advanced Characterization
+- Finished Project
 title: Real-time Microscopy Quantification Using Machine Learning
 url_code: ""
 url_pdf: ""
