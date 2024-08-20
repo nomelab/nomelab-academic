@@ -39,6 +39,8 @@ The Nuclear Engineering and Radiological Sciences Graduate Program is consistent
 
 We also hold biweekly group meetings broken into two primary components: (i) housekeeping and (ii) technical discussions/presentations. The technical discussions are lead by students and provides an opportunity for students to practice scientific and technical communication. The group meetings typically run 1 to 1.5 hours. Special group meetings may be held prior to conferences/defenses/etc. to provide detailed feedback on external presentations. Other standard meetings include our biweekly "sub-group" meetings on Friday mornings where research project with similar interests or tasks meet to discuss technical progress, identify road-blocks, and establish deliverables and work direction for the following two weeks. Additional meetings can include break-out meetings based on project/topic. Finally, graduate students focused on radiation effects testing are required to attend the biweekly Michigan Ion Beam Laboratory (<a href="https://mibl.engin.umich.edu/" target="_blank">MIBL</a>) meeting led by Dr. Jiao. 
 
+![Image of sub-group meeting](subgroup.jpg "AI/ML sub-group meeting on a Friday morning, Spring 2024")
+
 <strong>Q:</strong> <i>How does your group communicate?</i><br>
 <strong>A:</strong> Our group uses <a href="https://www.slack.com" target="_blank">Slack</a> for most quick questions, announcements, and other day-to-day operations in the group. E-mail is generally used for outside communication from the group. We also use Zoom for video calls or when students or Prof. Field are doing remote work. Meetings are scheduled and managed using Google Calendar and students have access to Prof. Field's calendar to know when they can touch base. 
 
