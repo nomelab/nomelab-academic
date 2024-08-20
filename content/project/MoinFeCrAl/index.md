@@ -6,7 +6,7 @@ image:
   focal_point: Smart
 links:
 slides: 
-summary: This project aims at developing a mechanistic understanding on the effects of Mo on α' precipitation and dislocation loop formation in FeCrAl alloys in thermal and irradiation conditions and turns it into a set of design principles guiding further optimization, by integrating atomistic simulations, CALPHAD modeling, thermal aging, proton irradiation, and advanced characterization. The material discoveries will be generalized to other solutes other than Mo.
+summary: This project aims at developing a mechanistic understanding on the effects of Mo on α' precipitation and dislocation loop formation in FeCrAl alloys in thermal and irradiation conditions.
 tags:
 - Radiation Effects
 - Advanced Characterization

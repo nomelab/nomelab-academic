@@ -6,7 +6,7 @@ image:
   focal_point: Smart
 links:
 slides: 
-summary: Connecting electrochemical potential using automating noble nanoparticle detection
+summary: Connecting electrochemical potential using automated noble nanoparticle detection
 tags:
 - Machine Learning
 - Advanced Characterization
