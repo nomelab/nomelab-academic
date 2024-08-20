@@ -1,8 +1,8 @@
 ---
-date: "2019-05-01T00:00:00Z"
+date: "2023-05-01T00:00:00Z"
 external_link: ""
 image:
-  caption: Image by L. Tan
+  caption: Image by C. Hirst
   focal_point: Smart
 links:
 slides: 

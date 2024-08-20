@@ -2,13 +2,13 @@
 date: "2024-08-01T00:00:00Z"
 external_link: ""
 image:
-  caption: Image by K.G. Field
+  caption: Image by Y. Zhang (UW)
   focal_point: Smart
 links:
 slides: 
 summary: This project aims at developing a mechanistic understanding on the effects of Mo on α' precipitation and dislocation loop formation in FeCrAl alloys in thermal and irradiation conditions and turns it into a set of design principles guiding further optimization, by integrating atomistic simulations, CALPHAD modeling, thermal aging, proton irradiation, and advanced characterization. The material discoveries will be generalized to other solutes other than Mo.
 tags:
-- Machine Learning
+- Radiation Effects
 - Advanced Characterization
 title: Developing critical insights on the effects of Mo on alpha prime precipitation and dislocation loop formation in FeCrAl alloys
 url_code: ""
