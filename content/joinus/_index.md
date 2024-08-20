@@ -2,7 +2,7 @@
 date: "2022-03-23"
 diagram: true
 image:
-  caption: 'NOME Group and Friends, Spring 2024, Prof. Hirst going away party'
+  caption: 'NOME Group and Friends, Spring 2024, Robby's going away party'
   placement: 1
 math: true
 title: Are you interested in joining us?
