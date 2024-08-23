@@ -18,7 +18,7 @@ interests:
 - Characterization
 - Radiation Effects
 - AI/ML
-title: Taxi Sibley
+title: Txai Sibley
 organizations:
 - name: Materials Science and Engineering
   url: "https://mse.engin.umich.edu/"
