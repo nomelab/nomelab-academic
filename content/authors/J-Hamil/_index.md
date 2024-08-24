@@ -15,7 +15,6 @@ interests:
 - Radiation Effects
 - Ion Irradiation
 - Characterization
-- Metallography
 title: Justin Hamil
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
