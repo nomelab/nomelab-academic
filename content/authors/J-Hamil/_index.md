@@ -1,7 +1,7 @@
 ---
 authors:
 - admin
-bio: My research interests include metallography, radiation effects, characterization, and alloy manufacturing techniques.
+bio: My research include ion irradiation, radiation effects, and advanced characterization.
 education:
   courses:
   - course: B.S. Nuclear Engineering
@@ -13,7 +13,7 @@ education:
 email: "hamilj@umich.edu"
 interests:
 - Radiation Effects
-- Advanced Alloys
+- Ion Irradiation
 - Characterization
 - Metallography
 title: Justin Hamil
@@ -30,12 +30,9 @@ social:
 - icon: envelope
   icon_pack: fas
   link: 'mailto:hamilj@umich.edu'
-- icon: cv
-  icon_pack: ai
-  link: "files/docs/CV-JH-2023.pdf"
 superuser: false
 user_groups:
 - Grad Students
 ---
 
-Justin attended the University of New Mexico, double majoring in Nuclear Engineering and the Russian Language. Justin is currently pursuing a Ph.D. in Nuclear Engineering and Radiological Sciences at the University of Michigan. His research focuses on manufacturing techniques and radiation effects in HT-9 steel to better understand material degradation in nuclear reactors. Justin’s work focuses on sample preparation with a rolling mill and furnace, ion irradiation at the Michigan Ion Beam Laboratory, and sample characterization using scanning electron microscopy (SEM) and transmission electron microscopy (TEM).
+Justin attended the University of New Mexico, double majoring in Nuclear Engineering and the Russian Language. Justin is currently pursuing a Ph.D. in Nuclear Engineering and Radiological Sciences at the University of Michigan. His research focuses on in-situ experiments of irradiated samples coupled with machine learning analyzation techniques. Additionally, he performs heat-to-heat swelling variability experiments of ferritic-martensitic steels with defocused dual-ion irradiations and sample characterization using scanning electron microscopy (SEM) and transmission electron microscopy (TEM).
