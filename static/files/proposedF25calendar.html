@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Monthly Schedule Calendar&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: 'Inter', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.calendar-grid {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: grid;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-template-columns: repeat(7, minmax(0, 1fr));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>grid-auto-rows: minmax(160px, auto);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.day-cell {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>min-height: 160px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.event {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.75rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 2px 6px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 4px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>text-overflow: ellipsis;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>white-space: nowrap;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body class="bg-gray-100 text-gray-800 p-4 sm:p-6 md:p-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-lg p-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center justify-between mb-6"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;h1 id="calendar-title" class="text-2xl sm:text-3xl font-bold text-gray-900"&gt;Schedule&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div class="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex items-center"&gt;&lt;span class="w-3 h-3 rounded-full bg-pink-500 mr-2"&gt;&lt;/span&gt;FEM&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex items-center"&gt;&lt;span class="w-3 h-3 rounded-full bg-amber-500 mr-2"&gt;&lt;/span&gt;SMM&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex items-center"&gt;&lt;span class="w-3 h-3 rounded-full bg-teal-500 mr-2"&gt;&lt;/span&gt;CIM&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex items-center"&gt;&lt;span class="w-3 h-3 rounded-full bg-purple-500 mr-2"&gt;&lt;/span&gt;Teaching&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex items-center"&gt;&lt;span class="w-3 h-3 rounded-full bg-indigo-500 mr-2"&gt;&lt;/span&gt;MIBL&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex items-center"&gt;&lt;span class="w-3 h-3 rounded-full bg-orange-500 mr-2"&gt;&lt;/span&gt;Group Mtg&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="flex items-center"&gt;&lt;span class="w-3 h-3 rounded-full bg-gray-400 mr-2"&gt;&lt;/span&gt;Standing&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="calendar-container"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- SCHEDULE DATA AND CONFIGURATION ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const year = 2025;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const cycleStartInfo = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>startDate: new Date(2025, 7, 11), // Aug 11 - Start of a "Week 1"</p>
+<p class="p1"><span class="Apple-converted-space">            </span>startCycle: 1</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const cancellations = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Using new Date(YYYY, MM, DD) for robust, timezone-safe dates. Month is 0-indexed.</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ start: new Date(2025, 8, 29), end: new Date(2025, 9, 4), reason: 'Japan Conference' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ start: new Date(2025, 10, 6), end: new Date(2025, 10, 7), reason: 'Madison Trip' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ start: new Date(2025, 10, 26), end: new Date(2025, 10, 28), reason: 'Thanksgiving' },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ start: new Date(2025, 11, 22), end: new Date(2026, 0, 1), reason: 'Winter Break' }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const events = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// --- Teaching ---</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Lecture Prep", days: [2, 4, 5], time: "9-10:30a", type: "teaching" },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Lecture 521", days: [2, 4], time: "10:30a-12p", type: "teaching" },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Senior Design Lecture", days: [5], time: "11:30a-12:30p", type: "teaching" },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Senior Design Tag Up", days: [1], time: "10:45-11:15a", type: "teaching" },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// --- Standing Meetings ---</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Project Update", days: [3], time: "10-11a", type: "standing" },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Consulting Meeting", days: [5], time: "3-4p", type: "standing" },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Project Update (Bi-W)", days: [1], time: "4-5p", type: "standing", frequency: "bi-weekly", startWeek: 35 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Project Update (Monthly)", days: [1], time: "12-1p", type: "standing", frequency: "monthly" },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "MIBL Meeting (Bi-W)", days: [2], time: "12-2p", type: "mibl", frequency: "bi-weekly", startWeek: 35 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Group Meeting (Bi-W)", days: [3], time: "12-2p", type: "group", frequency: "bi-weekly", startWeek: 34 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Irr-CF Project (Monthly)", days: [3], time: "10-11a", type: "standing", frequency: "monthly-second-wed" },</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// --- Subgroups ---</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Subgroup: SMM", days: [2], time: "2-4p", type: "smm", cycle: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Subgroup: FEM", days: [4], time: "2-4p", type: "fem", cycle: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Subgroup: SMM", days: [2], time: "2-4p", type: "smm", cycle: 2 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Subgroup: CIM", days: [4], time: "2-4p", type: "cim", cycle: 2 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Subgroup: FEM", days: [2], time: "2-4p", type: "fem", cycle: 3 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Subgroup: CIM", days: [4], time: "2-4p", type: "cim", cycle: 3 },</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// --- Specially Ordered Project Updates ---</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "Project Update (Bi-W)", days: [2], time: "4-5p", type: "standing", frequency: "bi-weekly", startWeek: 35 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "New Project Mtg (Bi-W)", days: [4], time: "4-5p", type: "standing", frequency: "bi-weekly", startWeek: 36 },</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// --- Individual 1-on-1s ---</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Gabriella", days: [3], time: "2-2:30p", type: "cim", cycle: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Hangyu", days: [3], time: "2:30-3p", type: "cim", cycle: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Ian", days: [3], time: "3-3:30p", type: "cim", cycle: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Txai", days: [3], time: "3:30-4p", type: "cim", cycle: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Timothy", days: [3], time: "4-4:30p", type: "cim", cycle: 1 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Ethan", days: [3], time: "2:30-3p", type: "fem", cycle: 2 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Lauryn", days: [3], time: "3-3:30p", type: "fem", cycle: 2 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Lingfeng", days: [3], time: "3:30-4p", type: "fem", cycle: 2 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Hannah", days: [3], time: "4-4:30p", type: "fem", cycle: 2 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Justin", days: [3], time: "2-2:30p", type: "smm", cycle: 3 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Mackenzie", days: [3], time: "3-3:30p", type: "smm", cycle: 3 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Wyatt", days: [3], time: "3:30-4p", type: "smm", cycle: 3 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Matthew", days: [3], time: "4-4:30p", type: "smm", cycle: 3 },</p>
+<p class="p1"><span class="Apple-converted-space">            </span>{ title: "1:1 Yuhan", days: [3], time: "4:30-5p", type: "smm", cycle: 3 },</p>
+<p class="p1"><span class="Apple-converted-space">        </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const eventColors = {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>fem: "bg-pink-100 text-pink-800",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>smm: "bg-amber-100 text-amber-800",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cim: "bg-teal-100 text-teal-800",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>teaching: "bg-purple-100 text-purple-800",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>standing: "bg-gray-100 text-gray-800",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>group: "bg-orange-100 text-orange-800",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>mibl: "bg-indigo-100 text-indigo-800",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cancellation: "bg-yellow-100 text-yellow-800"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- HELPER FUNCTIONS ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getWeekNumber(d) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getCycleWeek(date, startInfo) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const diffTime = date.getTime() - startInfo.startDate.getTime();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return ((startInfo.startCycle - 1 + diffWeeks) % 3) + 1;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function getCancellationReason(date) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (const period of cancellations) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const startDate = new Date(period.start.getFullYear(), period.start.getMonth(), period.start.getDate());</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const endDate = new Date(period.end.getFullYear(), period.end.getMonth(), period.end.getDate());</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (checkDate &gt;= startDate &amp;&amp; checkDate &lt;= endDate) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>return period.reason;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>return null;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- CALENDAR GENERATION LOGIC ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>function generateCalendar(year, month) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const monthName = new Date(year, month).toLocaleString('default', { month: 'long' });</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const container = document.getElementById('calendar-container');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>let html = `</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div class="mb-12"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4"&gt;${monthName} ${year}&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="grid grid-cols-7 text-center font-semibold text-gray-600 mb-2 text-sm"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>&lt;div&gt;Sun&lt;/div&gt;&lt;div&gt;Mon&lt;/div&gt;&lt;div&gt;Tue&lt;/div&gt;&lt;div&gt;Wed&lt;/div&gt;&lt;div&gt;Thu&lt;/div&gt;&lt;div&gt;Fri&lt;/div&gt;&lt;div&gt;Sat&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>&lt;div class="calendar-grid border-t border-l border-gray-200"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const date = new Date(year, month, 1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const firstDay = date.getDay(); // Sunday is 0</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const daysInMonth = new Date(year, month + 1, 0).getDate();</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const calendarStartDate = new Date(2025, 7, 25); // August 25th</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; firstDay; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>html += `&lt;div class="day-cell border-r border-b border-gray-200 bg-gray-50"&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let day = 1; day &lt;= daysInMonth; day++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const currentDate = new Date(year, month, day);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1...</p>
+<p class="p2"><span class="Apple-converted-space">                </span></p>
+<p class="p1"><span class="Apple-converted-space">                </span>html += `&lt;div class="day-cell border-r border-b border-gray-200 p-2 relative"&gt;`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (currentDate &gt;= calendarStartDate) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const weekNum = getWeekNumber(currentDate);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const cycleWeek = getCycleWeek(currentDate, cycleStartInfo);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>html += `&lt;span class="font-semibold text-sm"&gt;${day}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>&lt;span class="absolute top-2 right-2 text-xs text-gray-400"&gt;W${cycleWeek}&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                             </span>&lt;div class="mt-1"&gt;`;</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const cancellationReason = getCancellationReason(currentDate);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>if (cancellationReason) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>html += `&lt;div class="event ${eventColors['cancellation']}"&gt;${cancellationReason}&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>events.forEach(event =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>let shouldAdd = false;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>if (event.days.includes(dayOfWeek)) {</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>if (event.frequency === 'bi-weekly') {</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>if ((weekNum - event.startWeek) % 2 === 0) shouldAdd = true;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>} else if (event.frequency === 'monthly') {</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>if (day &lt;= 7 &amp;&amp; dayOfWeek === 1) shouldAdd = true; // First Monday</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>} else if (event.frequency === 'monthly-second-wed') {</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>if (day &gt; 7 &amp;&amp; day &lt;= 14 &amp;&amp; dayOfWeek === 3) shouldAdd = true; // Second Wednesday</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>} else if (event.cycle) {</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>if (event.cycle === cycleWeek) shouldAdd = true;</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                                    </span>shouldAdd = true; // Weekly or default</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                            </span>if (shouldAdd) {</p>
+<p class="p1"><span class="Apple-converted-space">                                </span>html += `&lt;div class="event ${eventColors[event.type]}"&gt;${event.time} ${event.title}&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>html += `&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                </span>html += `&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const totalCells = firstDay + daysInMonth;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const remainingCells = (7 - (totalCells % 7)) % 7;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; remainingCells; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                 </span>html += `&lt;div class="day-cell border-r border-b border-gray-200 bg-gray-50"&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>html += `&lt;/div&gt;&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.innerHTML += html;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>// --- INITIALIZATION ---</p>
+<p class="p1"><span class="Apple-converted-space">        </span>document.addEventListener('DOMContentLoaded', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('calendar-title').textContent = `Full Schedule (Aug 25 - Dec 2025)`;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const container = document.getElementById('calendar-container');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>container.innerHTML = ''; // Clear container before generating</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let month = 7; month &lt;= 11; month++) { // 7 = August, 11 = December</p>
+<p class="p1"><span class="Apple-converted-space">                </span>generateCalendar(year, month);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
