@@ -29,7 +29,7 @@ social:
   link: 'mailto:barms@umich.edu'
 superuser: false
 user_groups:
-- Undergraduates
+- Alumni
 ---
 
 I am an undergrad at the University of Michigan. I'm working to further my knowledge of radiation effects in materials, but would also like to study fusion and plasmas, and generally expand my knowledge base in Nuclear Engineering.

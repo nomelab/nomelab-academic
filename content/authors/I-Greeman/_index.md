@@ -28,7 +28,7 @@ social:
   link: 'mailto:igree@umich.edu'
 superuser: false
 user_groups:
-- Undergraduates
+- Alumni
 ---
 
 I am an undergraduate student at the University of Michigan studying Nuclear Engineering with a minor in Computer Science and International Studies. I am interested in working on effects of radiation on materials and medical physics. I hope to expand my knowledge in these subjects as well as make a positive impact in my field.
