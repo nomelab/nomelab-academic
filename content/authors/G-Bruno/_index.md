@@ -1,7 +1,7 @@
 ---
 authors:
 - admin
-bio: My research interests include advanced nuclear materials, advanced reactor design, and nuclear reactor fuels.
+bio: My research interests include advanced nuclear materials, advanced reactor design, and ML/AI.
 education:
   courses:
   - course: MS in Nuclear Engineering and Radiological Sciences
@@ -12,9 +12,9 @@ education:
     year: 2019
 email: "gbruno@umich.edu"
 interests:
-- Advanced Nuclear Materials
+- Nuclear Materials
 - Advanced Reactor Design
-- Reactor Fuels
+- Machine Learning/Artificial Intelligence
 title: Gabriella Bruno
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
@@ -34,4 +34,4 @@ user_groups:
 - Grad Students
 ---
 
-Gabriella Bruno is a graduate student in the Nuclear Engineering and Radiological Sciences department at the University of Michigan with interests in advanced reactor materials and the design of advanced reactors. Gabriella is currently looking at HT9 as part of the SNAP project. Additionally, Gabriella was an intern at BWX Technologies in Lynchburg, Virginia over the summer of 2018 and 2019. Ms. Bruno received her M.S. from the University of Michigan in 2021 and B.S. from Rensselear Polytechnic Institute in Nuclear Engineering in 2019.
+Gabriella Bruno is a graduate student in the Nuclear Engineering and Radiological Sciences department at the University of Michigan with interests in advanced reactor materials and design along with the intersection of artificial intelligence within the nuclear industry. Gabriella conducts research on quantifying error and bias in the labelling of irradiation induced defects with special focus on cavities. Ms. Bruno has interned with BWX Technologies, NuScale Power, and Theia Scientific, LLC. Gabriella received her M.S. from the University of Michigan in 2021 and B.S. from Rensselear Polytechnic Institute in Nuclear Engineering in 2019.
