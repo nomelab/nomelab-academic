@@ -25,7 +25,7 @@ organizations:
   url: "https://ners.engin.umich.edu/"
 - name: University of Michigan
   url: "https://umich.edu/"
-role: Associate Professor
+role: Professor
 social:
 - icon: envelope
   icon_pack: fas
