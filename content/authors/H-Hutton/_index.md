@@ -1,7 +1,7 @@
 ---
 authors:
 - admin
-bio: My research interests are radiation effects, fusion energy, advanced nuclear materials, simulation, and characterization.
+bio: My research interests include alloy development, radiation effects, advanced characterization, and developing materials for space applications.
 education:
   courses:
   - course: B.S. Engineering Science
@@ -9,8 +9,7 @@ education:
     year: 2024
 email: "hutt@umich.edu"
 interests:
-- Radiation Effects
-- Coupled Extremes
+- Radiation Effects in Coupled Extremes
 - Advanced Nuclear Materials
 - Characterization
 - Space
@@ -33,4 +32,4 @@ user_groups:
 - Grad Students
 ---
 
-Hannah is a first-year PhD student in the Department of Nuclear Engineering and Radiological Sciences at the University of Michigan. She received her bachelor's degree in Engineering Science with a minor in Chemistry from Smith College in 2024. During her first few years at Smith, Hannah conducted research focused on exploring the impact of microplastics on silver nanoparticle uptake in filter feeders. She then completed an exchange program at Princeton, where she utilized AM technologies to incorporate super absorbent polymers into concrete to develop infrastructure for flood mitigation. She interned at the US Naval Research Laboratory in the summers of 2023 and 2024, working on RF cathode development and materials for hypersonic applications. After completing her PhD, Hannah hopes to work at either a National Lab or with NASA to develop better materials for fission-based propulsion and power systems.
+I am a first-year PhD student in the Department of Nuclear Engineering and Radiological Sciences at the University of Michigan. I received my bachelor's degree in Engineering Science with a minor in Chemistry from Smith College in 2024. My first few years at Smith I conducted research focused on exploring the impact of microplastics on silver nanoparticle uptake in filter feeders. I then completed an exchange program at Princeton where I utilized AM technologies to incorporate super absorbent polymers into concrete to develop infrastructure for flood mitigation. I interned at the US Naval Research Laboratory in the summers of 2023 and 2024 and worked on RF cathode development and materials for hypersonic applications. After my PhD, I hope to work at either a National Lab or with NASA to develop better materials for fission-based propulsion and power systems. 
