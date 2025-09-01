@@ -12,7 +12,7 @@ interests:
 - Radiation Effects in Fusion Environments
 - Computational Modeling and Simulation
 - Advanced Nuclear Materials
-title: Boyan Zhheng
+title: Boyan Zheng
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"
