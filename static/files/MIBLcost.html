@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIBL Hours Analysis Calculator</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        umblue: '#00274c',
+                        ummaize: '#ffcb05'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Docx Generation Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/pizzip@3.1.4/dist/pizzip.min.js"></script>
+    <script>
+        console.log("PizZip globals:", {
+            PizZip: typeof window.PizZip,
+            Pizzip: typeof window.Pizzip
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.37.11/docxtemplater.js"></script>
+    <script src="https://unpkg.com/docx@7.1.0/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .input-group label { display: block; font-size: 0.875rem; font-weight: 600; color: #00274c; margin-bottom: 0.25rem; }
+        .input-group input, .input-group select, .input-group textarea { width: 100%; border-radius: 0.375rem; border: 1px solid #d1d5db; padding: 0.5rem; font-size: 0.875rem; }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { outline: none; border-color: #00274c; ring: 2px; }
+        .input-group input:disabled, .input-group select:disabled { background-color: #f3f4f6; color: #9ca3af; cursor: not-allowed; }
+        
+        .btn-primary { background-color: #00274c; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 600; transition: background-color 0.2s; display: flex; align-items: center; gap: 0.5rem; justify-content: center; }
+        .btn-primary:hover { background-color: #001933; }
+        
+        .btn-maize { background-color: #ffcb05; color: #00274c; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 700; transition: background-color 0.2s; display: flex; align-items: center; gap: 0.5rem; justify-content: center; }
+        .btn-maize:hover { background-color: #e5b600; }
+
+        .btn-secondary { background-color: #e5e7eb; color: #374151; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; transition: background-color 0.2s; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; justify-content: center;}
+        .btn-secondary:hover { background-color: #d1d5db; }
+        
+        .toggle-switch { display: flex; background: #e5e7eb; padding: 2px; border-radius: 999px; cursor: pointer; width: fit-content; }
+        .toggle-option { padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; transition: all 0.2s; }
+        .toggle-active { background: white; shadow: 0 1px 2px rgba(0,0,0,0.1); color: #00274c; }
+        .toggle-inactive { color: #6b7280; }
+        
+        .um-header { border-bottom: 4px solid #ffcb05; background-color: #00274c; color: white; }
+
+        /* --- PDF single-page rules --- */
+        #invoice-pdf {
+        width: 8.5in;
+        padding: 0.4in;
+        background: #fff;
+        box-sizing: border-box;
+        overflow: hidden; /* prevent accidental page spill */
+        }
+
+        /* tighten vertical rhythm a bit for PDF only */
+        #invoice-pdf table { line-height: 1.15; }
+        #invoice-pdf td, #invoice-pdf th { padding-top: 6px !important; padding-bottom: 6px !important; vertical-align: middle !important; line-height: 1.2}
+
+    </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    const { useState, useEffect, useMemo, useCallback, useRef } = React;
+
+    window.addEventListener("error", (e) => {
+    console.error("🧨 window.error:", e.message, e.error);
+    });
+
+    window.addEventListener("unhandledrejection", (e) => {
+    console.error("🧨 unhandledrejection:", e.reason);
+    });
+
+    // --- Constants & Defaults ---
+    const DEFAULT_GLOBAL_RATE = 1e-4; 
+    const SETUP_HOURS_PER_ACCEL = 4;
+    const SOURCE_CHANGE_PENALTY = 6;
+    const ELEMENTARY_CHARGE = 1.602e-19;
+    
+    const INITIAL_CATHODES = [
+        { id: 1, name: 'Proton (H)', type: 'gas', life: Infinity, defaultRate: 1.0e-5 },
+        { id: 2, name: 'Helium (He)', type: 'gas', life: Infinity, defaultRate: 1.0e-5 },
+        { id: 3, name: 'Iron (Fe)', type: 'solid', life: 20, defaultRate: 2.0e-3 },
+        { id: 4, name: 'Nickel (Ni)', type: 'solid', life: 20, defaultRate: 2.0e-3 },
+        { id: 5, name: 'Argon (Ar)', type: 'gas', life: Infinity, defaultRate: 1.0e-4 },
+        { id: 6, name: 'Krypton (Kr)', type: 'gas', life: Infinity, defaultRate: 1.0e-4 },
+        { id: 7, name: 'Xenon (Xe)', type: 'gas', life: Infinity, defaultRate: 1.0e-4 },
+        { id: 8, name: 'Chromium (Cr)', type: 'solid', life: 20, defaultRate: 1.0e-3 },
+        { id: 9, name: 'Manganese (Mn)', type: 'solid', life: 20, defaultRate: 1.0e-3 },
+        { id: 10, name: 'Gold (Au)', type: 'solid', life: 20, defaultRate: 1.0e-3 },
+        { id: 11, name: 'Silicon (Si)', type: 'solid', life: 20, defaultRate: 1.0e-4 },
+        { id: 12, name: 'Carbon (C)', type: 'solid', life: 20, defaultRate: 1.0e-4 },
+    ];
+
+    // --- Rate Logic (Hardcoded per request) ---
+    
+    const RATE_PRESETS = {
+        internal: [
+            { id: 'mibl_rate', label: 'MIBL Accelerator Rate', value: 55, unit: '$/hr' },
+            { id: 'monitoring_rate', label: '24/7 Monitoring Rate', value: 25, unit: '$/hr' },
+            { id: 'mc_rate', label: 'MC2 Instrument Rate', value: 54, unit: '$/hr' },
+            { id: 'mc_op_rate', label: 'MC2 Operator Assist', value: 44, unit: '$/hr' },
+            { id: 'mc_service_rate', label: 'MC2 Service Activity', value: 75, unit: '$/hr' },
+            { id: 'cor_person_rate', label: 'Corrosion Person Rate', value: 50, unit: '$/hr' },
+            { id: 'indirects', label: 'Indirect Costs', value: 56, unit: '%' },
+        ],
+        external: [
+            { id: 'mibl_rate', label: 'MIBL Accelerator Rate', value: 110, unit: '$/hr' }, 
+            { id: 'monitoring_rate', label: '24/7 Monitoring Rate', value: 50, unit: '$/hr' }, 
+            { id: 'mc_rate', label: 'MC2 Instrument Rate', value: 180, unit: '$/hr' }, // Explicit
+            { id: 'mc_op_rate', label: 'MC2 Operator Assist', value: 71, unit: '$/hr' }, // Explicit
+            { id: 'mc_service_rate', label: 'MC2 Service Activity', value: 175, unit: '$/hr' }, // Explicit
+            { id: 'cor_person_rate', label: 'Corrosion Person Rate', value: 100, unit: '$/hr' },
+            { id: 'indirects', label: 'Indirect Costs', value: 31, unit: '%' },
+        ],
+        nsuf: [
+            { id: 'mibl_rate', label: 'MIBL Accelerator Rate', value: 55, unit: '$/hr' },
+            { id: 'monitoring_rate', label: '24/7 Monitoring Rate', value: 25, unit: '$/hr' },
+            { id: 'mc_rate', label: 'MC2 Instrument Rate', value: 54, unit: '$/hr' },
+            { id: 'mc_op_rate', label: 'MC2 Operator Assist', value: 44, unit: '$/hr' },
+            { id: 'mc_service_rate', label: 'MC2 Service Activity', value: 75, unit: '$/hr' },
+            { id: 'cor_person_rate', label: 'Corrosion Person Rate', value: 50, unit: '$/hr' },
+            { id: 'indirects', label: 'Indirect Costs', value: 31, unit: '%' },
+        ]
+    };
+
+    const ACCELERATORS = ['Blue', 'Maize', 'Wolverine'];
+
+    // --- Global Components (Fixing ReferenceError) ---
+    const Icon = ({ name, size = 20, className = "" }) => {
+        if (name === 'flask') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 2v7.31"/><path d="M14 2v7.31"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg>;
+        if (name === 'settings') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>;
+        if (name === 'database') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>;
+        if (name === 'trash') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>;
+        if (name === 'plus') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="M12 5v14"/></svg>;
+        if (name === 'check') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>;
+        if (name === 'alert') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>;
+        if (name === 'download') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>;
+        if (name === 'upload') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>;
+        if (name === 'layers') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>;
+        if (name === 'link') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>;
+        if (name === 'microscope') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>;
+        if (name === 'file-text') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>;
+        if (name === 'bar-chart') return <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>;
+        return null;
+    };
+
+    // --- Toggle Switch Component (Moved Outside App to Fix ReferenceError) ---
+    const Toggle = ({ value, onChange, options }) => (
+        <div className="toggle-switch" onClick={() => onChange(value === options[0].val ? options[1].val : options[0].val)}>
+            {options.map(opt => (
+                <div key={opt.val} className={`toggle-option ${value === opt.val ? 'toggle-active' : 'toggle-inactive'}`}>
+                    {opt.label}
+                </div>
+            ))}
+        </div>
+    );
+
+    // --- Core Calculation Logic ---
+    const performCalculation = (accelName, accelConfig, cathodesList, numExperiments, forcedHoursPerExp = null) => {
+        if (!accelConfig.enabled) return { irrTime: 0, setupTime: 0, sourceChanges: 0, sourceTime: 0, total: 0, effectiveFlux: 0 };
+
+        const cathode = cathodesList.find(c => c.id === parseInt(accelConfig.cathodeId));
+        const sourceLife = cathode ? cathode.life : Infinity;
+        const standardRate = cathode ? (cathode.defaultRate || DEFAULT_GLOBAL_RATE) : DEFAULT_GLOBAL_RATE;
+
+        // Parse inputs carefully
+        const targetDose = parseFloat(accelConfig.targetDose) || 0;
+        const targetFluence = parseFloat(accelConfig.targetFluence) || 0;
+        const doseRate = parseFloat(accelConfig.doseRate) || 0;
+        const fluxInput = parseFloat(accelConfig.flux) || 0;
+        // Interpret flux units consistently with the fluence unit toggle (cm² vs m²)
+        const flux = (accelConfig.fluenceUnit === 'm2') ? (fluxInput / 10000) : fluxInput;
+        const current = parseFloat(accelConfig.current) || 0;
+        const area = parseFloat(accelConfig.area) || 1; 
+        const charge = parseFloat(accelConfig.charge) || 1;
+        const srimFactor = parseFloat(accelConfig.srimFactor) || 0;
+
+        let irrHoursPerExp = 0;
+        let effectiveFlux = 0; // For display purposes
+
+        if (forcedHoursPerExp !== null) {
+            // Override Logic: Used when Wolverine dictates the schedule
+            irrHoursPerExp = forcedHoursPerExp;
+        } else {
+            let irrSeconds = 0;
+            
+            // Normalize Fluence Target based on Unit
+            let targetFluenceCm2 = targetFluence;
+            if (accelConfig.targetType === 'fluence' && accelConfig.fluenceUnit === 'm2') {
+                targetFluenceCm2 = targetFluence / 10000;
+            } 
+
+            // --- Logic Branch A: Target is Dose (dpa) ---
+            if (accelConfig.targetType === 'dose') {
+                if (accelConfig.rateType === 'std_rate') {
+                    irrSeconds = targetDose / standardRate;
+                } else if (accelConfig.rateType === 'custom_rate') {
+                    if (doseRate > 0) irrSeconds = targetDose / doseRate;
+                } else if (accelConfig.rateType === 'current') {
+                    const amps = current * 1e-6;
+                    const areaCm2 = area / 100;
+                    const q = charge * ELEMENTARY_CHARGE;
+                    const calcFlux = amps / (q * areaCm2);
+                    effectiveFlux = calcFlux;
+                    const dpaPerSecond = calcFlux * srimFactor;
+                    
+                    if (dpaPerSecond > 0) {
+                        irrSeconds = targetDose / dpaPerSecond;
+                    } else {
+                        irrSeconds = 0; 
+                    }
+                } else if (accelConfig.rateType === 'flux') {
+                    effectiveFlux = flux;
+                    const dpaPerSecond = flux * srimFactor;
+                    if (dpaPerSecond > 0) irrSeconds = targetDose / dpaPerSecond;
+                }
+            }
+            
+            // --- Logic Branch B: Target is Fluence ---
+            if (accelConfig.targetType === 'fluence') {
+                if (accelConfig.rateType === 'flux') {
+                    // flux is already normalized to ions/cm²/s above
+                    effectiveFlux = flux;
+                    if (flux > 0) irrSeconds = targetFluenceCm2 / flux;
+
+                } else if (accelConfig.rateType === 'current') {
+                    const amps = current * 1e-6;
+                    const areaCm2 = area / 100;
+                    const q = charge * ELEMENTARY_CHARGE;
+                    const calcFlux = amps / (q * areaCm2); // ions/cm²/s
+                    effectiveFlux = calcFlux;
+                    if (calcFlux > 0) irrSeconds = targetFluenceCm2 / calcFlux;
+
+                } else if (accelConfig.rateType === 'std_rate' || accelConfig.rateType === 'custom_rate') {
+                    // Convert target fluence -> equivalent dose using SRIM factor (dpa per ion fluence)
+                    // srimFactor units: dpa per (ion/cm²)  == dpa·cm²/ion
+                    if (srimFactor > 0) {
+                        const equivDose = targetFluenceCm2 * srimFactor; // dpa
+                        const dpaRate = (accelConfig.rateType === 'std_rate') ? standardRate : doseRate; // dpa/s
+                        if (dpaRate > 0) {
+                            irrSeconds = equivDose / dpaRate;
+                            // For user feedback: show the implied flux that would achieve the chosen dose rate
+                            effectiveFlux = dpaRate / srimFactor; // ions/cm²/s
+                        }
+                    }
+                }
+            }
+
+            irrHoursPerExp = irrSeconds / 3600;
+        }
+
+        const totalIrrHours = irrHoursPerExp * numExperiments;
+        const totalSetup = numExperiments * SETUP_HOURS_PER_ACCEL;
+
+        let changes = 0;
+        if (sourceLife !== Infinity && sourceLife > 0) {
+            changes = Math.floor((totalIrrHours - 0.001) / sourceLife);
+        }
+        
+        const sourceTime = changes * SOURCE_CHANGE_PENALTY;
+
+        return {
+            irrTime: totalIrrHours,
+            setupTime: totalSetup,
+            sourceChanges: changes,
+            sourceTime: sourceTime,
+            total: (totalIrrHours + totalSetup + sourceTime),
+            effectiveFlux: effectiveFlux
+        };
+    };
+
+    // --- Helper to format beam time dynamically ---
+    const formatBeamTime = (hours) => {
+        if (!hours) return "0.00 h";
+        if (hours < 0.0001) return "< 1 s";
+        if (hours < 0.01) {
+            const secs = hours * 3600;
+            return `${secs.toFixed(1)} s`;
+        }
+        if (hours < 1) {
+            const mins = hours * 60;
+            return `${mins.toFixed(1)} min`;
+        }
+        return `${hours.toFixed(2)} h`;
+    };
+
+    // --- Main Application ---
+
+    function App() {
+        const [activeTab, setActiveTab] = useState('calculator'); 
+        
+        // --- State: Data ---
+        const [projectName, setProjectName] = useState("");
+        const [quoteQueue, setQuoteQueue] = useState([]); 
+        const [numExperiments, setNumExperiments] = useState(1);
+        const [samplesPerExperiment, setSamplesPerExperiment] = useState(1); 
+        const [safetyFactor, setSafetyFactor] = useState(1.2);
+        const [cathodes, setCathodes] = useState(INITIAL_CATHODES);
+        const [rates, setRates] = useState(RATE_PRESETS.internal);
+        const [rateType, setRateType] = useState('internal');
+
+        // --- State: Inputs ---
+        const [accelData, setAccelData] = useState({
+            'Blue': { enabled: false, cathodeId: 1, mode: 'dose_rate', targetType: 'dose', targetDose: 10, targetFluence: 1e16, fluenceUnit: 'cm2', rateType: 'std_rate', doseRate: 1e-4, flux: 1e12, current: 10, charge: 1, area: 100, srimFactor: 1 },
+            'Maize': { enabled: true, cathodeId: 3, mode: 'dose_rate', targetType: 'dose', targetDose: 50, targetFluence: 5e16, fluenceUnit: 'cm2', rateType: 'std_rate', doseRate: 2e-3, flux: 1e13, current: 5, charge: 3, area: 25, srimFactor: 1 },
+            'Wolverine': { enabled: false, cathodeId: 1, mode: 'dose_rate', targetType: 'dose', targetDose: 50, targetFluence: 5e16, fluenceUnit: 'cm2', rateType: 'std_rate', doseRate: 1e-4, flux: 1e12, current: 20, charge: 1, area: 100, srimFactor: 1 },
+        });
+
+        const [mc2Data, setMc2Data] = useState({
+            numSamples: 1,
+            fib: { enabled: true, type: 'targeted', operator: 'staff' }, 
+            tem: { enabled: true, hours: 5, operator: 'user' },
+            ebsd: { enabled: false, hours: 4, operator: 'user' },
+            nano: { enabled: false, hours: 4, operator: 'user' },
+            service: { hours: 0 } 
+        });
+        const [applySafetyToMc2, setApplySafetyToMc2] = useState(false);
+
+        // --- State: Quote Info ---
+        const [quoteInfo, setQuoteInfo] = useState({
+        trackingNumber: "",
+        piName: "", piEmail: "", piInst: "",
+        autoMonitor: true,          // ✅ NEW (default ON)
+        monitorHours: 0,            // manual override when autoMonitor = false
+        miblStaffHours: 0,
+        corrosionHours: 0, supplyCost: 0, supplyUnits: 0
+        });
+
+        // --- Refs for file inputs ---
+        const cathodeFileRef = useRef(null);
+        const ratesFileRef = useRef(null);
+        const templateFileRef = useRef(null); 
+        const [templateFile, setTemplateFile] = useState(null); 
+
+        // --- Helper: Get Rate Value ---
+        const getRate = (id) => {
+            const r = rates.find(x => x.id === id);
+            return r ? r.value : 0;
+        };
+
+        // --- Calculations ---
+        const mc2Results = useMemo(() => {
+            const { numSamples, fib, tem, ebsd, nano, service } = mc2Data;
+            let instrumentHours = 0;
+            let staffHours = 0;
+            let serviceHours = service ? parseFloat(service.hours) || 0 : 0; 
+
+            if(fib.enabled) {
+                const fibTime = fib.type === 'targeted' ? 8 : 4;
+                const totalFib = numSamples * fibTime;
+                instrumentHours += totalFib;
+                if(fib.operator === 'staff') staffHours += totalFib;
+            }
+            if(tem.enabled) {
+                const totalTem = numSamples * tem.hours;
+                instrumentHours += totalTem;
+                if(tem.operator === 'staff') staffHours += totalTem;
+            }
+            if(ebsd.enabled) {
+                const totalEbsd = numSamples * ebsd.hours;
+                instrumentHours += totalEbsd;
+                if(ebsd.operator === 'staff') staffHours += totalEbsd;
+            }
+            if(nano.enabled) {
+                const totalNano = numSamples * nano.hours;
+                instrumentHours += totalNano;
+                if(nano.operator === 'staff') staffHours += totalNano;
+            }
+
+            // Apply Safety Factor if enabled
+            const factor = applySafetyToMc2 ? safetyFactor : 1.0;
+
+            const inst = instrumentHours * factor;
+            const staff = staffHours * factor;
+            const svc = serviceHours * factor;
+
+            return {
+                instrumentHours: inst,
+                staffHours: staff,
+                serviceHours: svc,
+                total: inst + staff + svc,   // ✅ no second factor
+            };
+        }, [mc2Data, applySafetyToMc2, safetyFactor]);
+
+        // --- Orchestrator ---
+        const calculateGroup = useCallback((groupAccelData, groupNumExperiments) => {
+            let totalIrr = 0; let totalSetup = 0; let totalSource = 0; let grandTotalRaw = 0;
+            const results = {};
+
+            const wolverineConfig = groupAccelData['Wolverine'];
+            const isWolverineMaster = wolverineConfig && wolverineConfig.enabled;
+            let masterHoursPerExp = null;
+
+            if (isWolverineMaster) {
+                const wRes = performCalculation('Wolverine', wolverineConfig, cathodes, groupNumExperiments, null);
+                results['Wolverine'] = wRes;
+                masterHoursPerExp = wRes.irrTime / groupNumExperiments;
+            }
+
+            ACCELERATORS.forEach(acc => {
+                if (acc === 'Wolverine' && isWolverineMaster) {
+                    totalIrr += results[acc].irrTime;
+                    totalSetup += results[acc].setupTime;
+                    totalSource += results[acc].sourceTime;
+                    grandTotalRaw += results[acc].total;
+                    return;
+                }
+                const config = groupAccelData[acc];
+                const override = (isWolverineMaster && config.enabled) ? masterHoursPerExp : null;
+                const res = performCalculation(acc, config, cathodes, groupNumExperiments, override);
+                // If Wolverine is master AND this accelerator is synced to it,
+            // then Wolverine cathode maintenance downtime applies to BOTH accelerators.
+            if (isWolverineMaster && override !== null && acc !== 'Wolverine') {
+            res.sharedSourceTime = results['Wolverine']?.sourceTime || 0;
+            res.sourceTime += res.sharedSourceTime;
+            res.total += res.sharedSourceTime;
+            }
+                results[acc] = res;
+                results[acc].isSynced = (override !== null);
+                totalIrr += res.irrTime;
+                totalSetup += res.setupTime;
+                totalSource += res.sourceTime;
+                grandTotalRaw += res.total;
+            });
+
+            return { 
+                totals: { irr: totalIrr, setup: totalSetup, source: totalSource, grandRaw: grandTotalRaw },
+                results
+            };
+        }, [cathodes]);
+
+        const currentData = useMemo(() => {
+            const data = calculateGroup(accelData, numExperiments);
+            return {
+                ...data,
+                totals: {
+                ...data.totals,
+                grandTotal: (data.totals.irr * safetyFactor) + data.totals.setup + data.totals.source
+                }
+            };
+        }, [accelData, numExperiments, safetyFactor, calculateGroup]);
+
+        const queueTotals = useMemo(() => {
+            let totalIrr = 0; let totalSetup = 0; let totalSource = 0; let grandTotalRaw = 0;
+            let totalExps = 0; let totalSamples = 0;
+            quoteQueue.forEach(item => {
+                const { totals } = calculateGroup(item.config, item.numExperiments);
+                totalIrr += totals.irr;
+                totalSetup += totals.setup;
+                totalSource += totals.source;
+                grandTotalRaw += totals.grandRaw;
+                totalExps += item.numExperiments;
+                totalSamples += (item.numExperiments * (item.samplesPerExperiment || 1));
+            });
+            return { 
+                irr: totalIrr, setup: totalSetup, source: totalSource, 
+                grandRaw: grandTotalRaw,
+                grandTotal: (totalIrr * safetyFactor) + totalSetup + totalSource,
+                totalExps, totalSamples
+            };
+        }, [quoteQueue, calculateGroup, safetyFactor]);
+
+        
+        const queueDetails = useMemo(() => {
+            return quoteQueue.map((item, idx) => {
+                const computed = calculateGroup(item.config, item.numExperiments);
+                const t = computed.totals;
+                const quotedTotal = (t.irr * safetyFactor) + t.setup + t.source;
+                const n = item.numExperiments || 0;
+                const perExp = n > 0 ? {
+                    irr: t.irr / n,
+                    setup: t.setup / n,
+                    source: t.source / n,
+                    raw: t.grandRaw / n,
+                    quoted: quotedTotal / n,
+                } : { irr: 0, setup: 0, source: 0, raw: 0, quoted: 0 };
+
+                return {
+                    ...item,
+                    idx: idx + 1,
+                    totals: t,
+                    quotedTotal,
+                    perExp,
+                };
+            });
+        }, [quoteQueue, calculateGroup, safetyFactor]);
+
+const displayTotals = quoteQueue.length > 0 ? queueTotals : currentData.totals;
+        const calculatedTotalSamples = quoteQueue.length > 0 ? queueTotals.totalSamples : (numExperiments * samplesPerExperiment);
+
+        // --- Quote Data Aggregation ---
+        const getQuoteData = () => {
+            // Aggregate per-accelerator hours and setups from queue
+            const breakdown = {
+                Wolverine: { beamHours: 0, setups: 0 },
+                Maize: { beamHours: 0, setups: 0 },
+                Blue: { beamHours: 0, setups: 0 }
+            };
+
+            const processGroup = (groupData, groupExps) => {
+                const res = calculateGroup(groupData, groupExps);
+                ACCELERATORS.forEach(acc => {
+                    if (groupData[acc].enabled) {
+                        breakdown[acc].beamHours += res.results[acc].irrTime;
+                        breakdown[acc].setups += groupExps; // 1 setup per experiment
+                    }
+                });
+            };
+
+            if (quoteQueue.length > 0) {
+                quoteQueue.forEach(item => processGroup(item.config, item.numExperiments));
+            } else {
+                processGroup(accelData, numExperiments);
+            }
+
+            // Apply Safety Factor to Beam Hours only
+            ['Wolverine', 'Maize', 'Blue'].forEach(acc => {
+                breakdown[acc].beamHours *= safetyFactor;
+            });
+
+            // --- Monitoring hours (sync to operating window) ---
+            const w = breakdown.Wolverine.beamHours || 0;
+            const m = breakdown.Maize.beamHours || 0;
+            const b = breakdown.Blue.beamHours || 0;
+
+            // Which accels are actually in use?
+            const enabledAccs = [
+                w > 0 ? "Wolverine" : null,
+                m > 0 ? "Maize" : null,
+                b > 0 ? "Blue" : null,
+            ].filter(Boolean);
+
+            // Auto monitoring window:
+            // - 1 accel: that accel's beam hours
+            // - Wolverine present: Wolverine defines the linked operating window
+            // - Maize + Blue only: staff for the longer run
+            let autoMonitorHours = 0;
+            if (enabledAccs.length === 1) {
+                autoMonitorHours = Math.max(w, m, b);
+            } else if (enabledAccs.length > 1 && w > 0) {
+                autoMonitorHours = w;
+            } else if (enabledAccs.length > 1) {
+                autoMonitorHours = Math.max(m, b);
+            }
+
+            // Final billed monitoring hours: auto-sync OR manual override
+            const monitorHoursUsed = quoteInfo.autoMonitor
+                ? autoMonitorHours
+                : (parseFloat(quoteInfo.monitorHours) || 0);
+
+            // Calculate Costs
+            const miblRate = getRate('mibl_rate');
+            const wCost = (breakdown.Wolverine.beamHours * miblRate) + (breakdown.Wolverine.setups * 4 * miblRate);
+            const mCost = (breakdown.Maize.beamHours * miblRate) + (breakdown.Maize.setups * 4 * miblRate);
+            const bCost = (breakdown.Blue.beamHours * miblRate) + (breakdown.Blue.setups * 4 * miblRate);
+            
+            const monitorCost = monitorHoursUsed * getRate('monitoring_rate');
+            const staffCost = quoteInfo.miblStaffHours * miblRate;
+            
+            const miblSub = wCost + mCost + bCost + monitorCost + staffCost;
+
+            const mcInstCost = mc2Results.instrumentHours * getRate('mc_rate');
+            const mcStaffCost = mc2Results.staffHours * getRate('mc_op_rate');
+            const mcServiceCost = mc2Results.serviceHours * getRate('mc_service_rate'); 
+            const mcSub = mcInstCost + mcStaffCost + mcServiceCost;
+
+            const corPersonCost = quoteInfo.corrosionHours * getRate('cor_person_rate');
+            const corSupCost = quoteInfo.supplyUnits * quoteInfo.supplyCost;
+            const corSub = corPersonCost + corSupCost;
+
+            const direct = miblSub + mcSub + corSub;
+            const indirect = direct * (getRate('indirects') / 100);
+            const total = direct + indirect;
+
+            return {
+                breakdown,
+                monitorHoursUsed,     // ✅ NEW (actual hours billed)
+                autoMonitorHours,     // ✅ NEW (what auto would be)
+                miblSub, mcSub, corSub, direct, indirect, total,
+                monitorCost, staffCost, mcInstCost, mcStaffCost, mcServiceCost,
+                corPersonCost, corSupCost, miblRate
+            };
+        };
+
+        // --- Calculator Time CSV Export (restores old feature) ---
+        const downloadTimeCSV = () => {
+        const date = new Date().toISOString().slice(0,10);
+        const safeName = (projectName || "Experiment").replace(/[^a-z0-9]/gi, "_");
+
+        // Build rows from either queue groups or current configuration
+        const groups = (quoteQueue.length > 0)
+            ? quoteQueue.map((item, idx) => ({
+                label: `Group ${idx + 1}: ${item.description}`,
+                numExperiments: item.numExperiments,
+                samplesPerExperiment: item.samplesPerExperiment || 1,
+                config: item.config,
+            }))
+            : [{
+                label: "Current Configuration",
+                numExperiments,
+                samplesPerExperiment,
+                config: accelData,
+            }];
+
+        const rows = [];
+
+        // Header summary rows (human-friendly; still CSV)
+        rows.push(["MIBL Experiment Hours Breakdown"]);
+        rows.push(["Project Name", projectName || ""]);
+        rows.push(["Date", date]);
+        rows.push(["Safety Factor (applies to irradiation quote totals)", safetyFactor]);
+        rows.push([""]);
+        rows.push(["Group", "Accelerator", "Ion Source", "Target Type", "Target Unit", "Target Value", "Method", "Rate/Flux/Current", "Beam Time (h)", "Setup Time (h)", "Source Changes", "Source Maint (h)", "Subtotal (h)", "Synced?"]);
+
+        groups.forEach(g => {
+            const computed = calculateGroup(g.config, g.numExperiments);
+
+            ACCELERATORS.forEach(acc => {
+            const cfg = g.config[acc];
+            if (!cfg?.enabled) return;
+
+            const res = computed.results[acc];
+            const cathode = cathodes.find(c => c.id === parseInt(cfg.cathodeId));
+
+            // target unit/value display
+            const targetUnit =
+                cfg.targetType === "fluence"
+                ? (cfg.fluenceUnit === "m2" ? "ions/m²" : "ions/cm²")
+                : "dpa";
+
+            const targetValue =
+                cfg.targetType === "dose" ? cfg.targetDose : cfg.targetFluence;
+
+            // rate display
+            let rateDisplay = "";
+            if (cfg.rateType === "std_rate") {
+                rateDisplay = `Std: ${(cathode?.defaultRate || DEFAULT_GLOBAL_RATE).toExponential(2)} dpa/s`;
+            } else if (cfg.rateType === "custom_rate") {
+                rateDisplay = `${cfg.doseRate} dpa/s`;
+            } else if (cfg.rateType === "flux") {
+                rateDisplay = `${cfg.flux} ions/cm²/s`;
+            } else if (cfg.rateType === "current") {
+                rateDisplay = `${cfg.current} µA`;
+            }
+
+            rows.push([
+                g.label,
+                acc,
+                cathode ? cathode.name : "Unknown",
+                cfg.targetType,
+                targetUnit,
+                targetValue,
+                cfg.rateType,
+                rateDisplay,
+                (res.irrTime || 0).toFixed(6),
+                (res.setupTime || 0).toFixed(2),
+                res.sourceChanges ?? 0,
+                (res.sourceTime || 0).toFixed(2),
+                (res.total || 0).toFixed(6),
+                res.isSynced ? "Yes" : "No",
+            ]);
+            });
+
+            // Group totals row
+            rows.push([""]);
+            rows.push([
+            g.label,
+            "GROUP TOTALS",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            computed.totals.irr.toFixed(6),
+            computed.totals.setup.toFixed(2),
+            "",
+            computed.totals.source.toFixed(2),
+            computed.totals.grandRaw.toFixed(6),
+            "",
+            ]);
+            rows.push([""]);
+        });
+
+        // Final overall totals (matches what you display)
+        rows.push(["OVERALL TOTALS (Display)"]);
+        rows.push(["Setup Hours", displayTotals.setup.toFixed(3)]);
+        rows.push(["Beam Hours", displayTotals.irr.toFixed(3)]);
+        rows.push(["Source Maint Hours", displayTotals.source.toFixed(3)]);
+        rows.push(["Raw Total", displayTotals.grandRaw.toFixed(3)]);
+        rows.push(["Quoted Total (w/ Safety)", displayTotals.grandTotal.toFixed(3)]);
+
+        // --- MC2 & Corrosion hours (included in export) ---
+        rows.push([""]);
+        rows.push(["MC2 Hours Breakdown"]);
+        rows.push(["MC2 Num Samples", (mc2Data.numSamples != null ? mc2Data.numSamples : 0)]);
+        rows.push(["MC2 Safety Applied?", applySafetyToMc2 ? "Yes" : "No"]);
+        rows.push(["MC2 Safety Factor Used", applySafetyToMc2 ? safetyFactor : 1.0]);
+        rows.push([""]);
+        rows.push(["MC2 Technique Detail", "Enabled", "Samples", "Hours/Sample", "Instrument Hours", "Operator", "Staff Hours"]);
+        
+        const mc2Factor = applySafetyToMc2 ? safetyFactor : 1.0;
+        const mc2NS = parseFloat(mc2Data.numSamples) || 0;
+
+        // FIB
+        if (mc2Data.fib?.enabled) {
+            const hps = mc2Data.fib.type === 'targeted' ? 8 : 4;
+            const inst = mc2NS * hps * mc2Factor;
+            const staff = (mc2Data.fib.operator === 'staff') ? inst : 0;
+            rows.push(["FIB (" + mc2Data.fib.type + ")", "Yes", mc2NS, hps, inst.toFixed(3), mc2Data.fib.operator, staff.toFixed(3)]);
+        } else {
+            rows.push(["FIB", "No", mc2NS, "", "0.000", "", "0.000"]);
+        }
+
+        // TEM
+        if (mc2Data.tem?.enabled) {
+            const hps = parseFloat(mc2Data.tem.hours) || 0;
+            const inst = mc2NS * hps * mc2Factor;
+            const staff = (mc2Data.tem.operator === 'staff') ? inst : 0;
+            rows.push(["TEM", "Yes", mc2NS, hps, inst.toFixed(3), mc2Data.tem.operator, staff.toFixed(3)]);
+        } else {
+            rows.push(["TEM", "No", mc2NS, "", "0.000", "", "0.000"]);
+        }
+
+        // EBSD
+        if (mc2Data.ebsd?.enabled) {
+            const hps = parseFloat(mc2Data.ebsd.hours) || 0;
+            const inst = mc2NS * hps * mc2Factor;
+            const staff = (mc2Data.ebsd.operator === 'staff') ? inst : 0;
+            rows.push(["EBSD", "Yes", mc2NS, hps, inst.toFixed(3), mc2Data.ebsd.operator, staff.toFixed(3)]);
+        } else {
+            rows.push(["EBSD", "No", mc2NS, "", "0.000", "", "0.000"]);
+        }
+
+        // Nanoindentation
+        if (mc2Data.nano?.enabled) {
+            const hps = parseFloat(mc2Data.nano.hours) || 0;
+            const inst = mc2NS * hps * mc2Factor;
+            const staff = (mc2Data.nano.operator === 'staff') ? inst : 0;
+            rows.push(["Nanoindentation", "Yes", mc2NS, hps, inst.toFixed(3), mc2Data.nano.operator, staff.toFixed(3)]);
+        } else {
+            rows.push(["Nanoindentation", "No", mc2NS, "", "0.000", "", "0.000"]);
+        }
+
+        // Service is not per-sample
+        const svc = (parseFloat(mc2Data.service?.hours) || 0) * mc2Factor;
+        rows.push(["Service / Prep (flat)", (svc > 0 ? "Yes" : "No"), "", "", "", "", svc.toFixed(3)]);
+
+        rows.push([""]);
+        rows.push(["Corrosion Hours Breakdown"]);
+        rows.push(["Corrosion Labor (Person Hours)", (quoteInfo.corrosionHours || 0).toFixed(3)]);
+
+        const csv = rows
+            .map(r => r.map(x => {
+            const s = (x ?? "").toString();
+            // CSV escape
+            return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+            }).join(","))
+            .join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `MIBL_TimeBreakdown_${safeName}_${date}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        };
+
+        // --- Handlers ---
+        const handleRateChange = (type) => {
+            setRateType(type);
+            setRates(RATE_PRESETS[type]);
+        };
+
+        const handleAddToQuote = () => { /* ... existing ... */ 
+            const activeAccels = ACCELERATORS.filter(a => accelData[a].enabled);
+            if (activeAccels.length === 0) return;
+            let type = activeAccels.length === 3 ? "Triple Beam" : activeAccels.length === 2 ? "Dual Beam" : "Single Beam";
+            const ions = activeAccels.map(a => cathodes.find(cat => cat.id === accelData[a].cathodeId)?.name || '?').join('/');
+            const newItem = {
+                id: Date.now(),
+                description: `${type} (${ions})`,
+                numExperiments: numExperiments,
+                samplesPerExperiment: samplesPerExperiment,
+                config: JSON.parse(JSON.stringify(accelData)), 
+                rawHours: currentData.totals.grandRaw 
+            };
+            setQuoteQueue([...quoteQueue, newItem]);
+        };
+        const handleRemoveFromQuote = (id) => setQuoteQueue(quoteQueue.filter(i => i.id !== id));
+        const updateAccel = (name, field, value) => setAccelData(prev => { /* ... existing ... */ 
+             const next = { ...prev[name], [field]: value };
+             if (field === 'targetType') {
+                if (value === 'fluence' && !next.rateType) next.rateType = 'flux';
+                else if (value === 'dose' && !next.rateType) next.rateType = 'std_rate';
+             }
+             return { ...prev, [name]: next };
+        });
+        const toggleAccel = (name) => setAccelData(prev => ({...prev, [name]: { ...prev[name], enabled: !prev[name].enabled }}));
+        const setQuickConfig = (mode) => setAccelData(prev => ({
+            'Blue': { ...prev['Blue'], enabled: true },
+            'Maize': { ...prev['Maize'], enabled: mode !== 'single' },
+            'Wolverine': { ...prev['Wolverine'], enabled: mode === 'triple' }
+        }));
+        
+        // FIXED: Corrected logic to handle root level updates properly
+        const updateMc2 = (section, field, value) => setMc2Data(prev => {
+            if (!section) return { ...prev, [field]: value };
+            return { ...prev, [section]: field ? { ...prev[section], [field]: value } : value };
+        });
+
+        // --- DB File Handlers ---
+        const downloadCSV = (data, filename) => { /* ... existing ... */ 
+            const header = Object.keys(data[0]).join(",");
+            const rows = data.map(obj => Object.values(obj).join(",")).join("\n");
+            const blob = new Blob([header + "\n" + rows], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+        };
+        const handleRateUpload = (e) => { /* ... existing ... */ 
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const lines = evt.target.result.split('\n');
+                const newRates = [];
+                for(let i=1; i<lines.length; i++){
+                    const parts = lines[i].trim().split(',');
+                    if(parts.length>=4) newRates.push({ id: parts[0], label: parts[1], value: parseFloat(parts[2]), unit: parts[3] });
+                }
+                if(newRates.length > 0) { setRates(newRates); alert("Rates updated."); }
+                if(ratesFileRef.current) ratesFileRef.current.value = "";
+            };
+            reader.readAsText(file);
+        };
+        const handleCathodeUpload = (e) => { /* ... existing ... */ 
+             const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const lines = ev.target.result.split('\n');
+                const newCathodes = [];
+                for(let i=1; i<lines.length; i++) {
+                    const parts = lines[i].trim().split(',');
+                    if(parts.length >= 5) {
+                        const id = parseInt(parts[0]);
+                        const name = parts[1];
+                        const type = parts[2];
+                        let life = parts[3] === 'Infinity' ? Infinity : parseFloat(parts[3]);
+                        const rate = parseFloat(parts[4]);
+                        if(!isNaN(id)) newCathodes.push({ id, name, type, life, defaultRate: rate });
+                    }
+                }
+                if(newCathodes.length > 0) { setCathodes(newCathodes); alert("Cathodes updated."); }
+                if(cathodeFileRef.current) cathodeFileRef.current.value = "";
+            };
+            reader.readAsText(file);
+        };
+
+        const handleTemplateUpload = (e) => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                setTemplateFile(evt.target.result); 
+                alert("Template loaded successfully.");
+            };
+            reader.readAsArrayBuffer(file);
+        };
+
+        // --- PDF generation ---
+        const generatePdf = async () => {
+            console.log("✅ generatePdf start");
+
+            let q;
+            try {
+                q = getQuoteData();
+            } catch (e) {
+                console.error("🧨 getQuoteData failed:", e);
+                alert("Could not compute quote data. Check console.");
+                return;
+            }
+
+            const el = document.getElementById("invoice-pdf");
+            if (!el) {
+                console.error("🧨 invoice-pdf element not found");
+                alert("Invoice container not found.");
+                return;
+            }
+
+            console.log("invoice rect:", el.getBoundingClientRect());
+
+            const date = new Date().toLocaleDateString();
+            const safeName = (projectName || "Draft").replace(/[^a-z0-9]/gi, "_");
+            const filename = `MIBL_Quote_${safeName}_${date.replace(/\//g, "-")}.pdf`;
+
+            // --- Make a clone for capture ---
+            const clone = el.cloneNode(true);
+
+            Object.assign(clone.style, {
+            position: "fixed",
+            left: "-2000px",
+            top: "0px",
+            width: "8.5in",
+            background: "white",
+            opacity: "1",
+            visibility: "visible",
+            display: "block",
+            pointerEvents: "none",
+            zIndex: "999999",
+            });
+
+            document.body.appendChild(clone);
+
+            // Force table cell vertical centering for html2canvas capture
+            clone.querySelectorAll("td, th").forEach((cell) => {
+                cell.style.verticalAlign = "middle";
+                cell.style.display = "table-cell"; // defensive: ensure table-cell behavior
+            });
+
+            clone.querySelectorAll("*").forEach((node) => {
+                const style = window.getComputedStyle(node);
+                if (style.overflow === "hidden") node.style.overflow = "visible";
+                if (style.overflowY === "hidden") node.style.overflowY = "visible";
+                if (style.overflowX === "hidden") node.style.overflowX = "visible";
+            });
+
+            // Let layout settle
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+            // --- Force single-page letter fit (scale down if needed) ---
+            const PX_PER_IN = 96;
+
+            // Letter page size in px (CSS inches → px)
+            const PAGE_W_PX = 8.5 * PX_PER_IN;
+            const PAGE_H_PX = 11 * PX_PER_IN;
+
+            // Your jsPDF margin (in inches) below; keep consistent
+            const PDF_MARGIN_IN = 0.4;
+
+            // Usable printable area (px)
+            const usableW = PAGE_W_PX - 2 * (PDF_MARGIN_IN * PX_PER_IN);
+            const usableH = PAGE_H_PX - 2 * (PDF_MARGIN_IN * PX_PER_IN);
+
+            // Ensure clone uses border-box so padding doesn't blow width/height
+            clone.style.boxSizing = "border-box";
+            clone.style.width = "8.5in";
+            clone.style.overflow = "hidden";
+
+            // Let layout settle before measuring
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+            const r0 = clone.getBoundingClientRect();
+
+            // Compute scale needed to fit BOTH width and height.
+            // (Width usually fits already; height is the usual problem.)
+            const scaleW = usableW / r0.width;
+            const scaleH = usableH / r0.height;
+            const scale = Math.min(1, scaleW, scaleH);
+
+            if (scale < 1) {
+            clone.style.transformOrigin = "top left";
+            clone.style.transform = `scale(${scale})`;
+            }
+
+            // Wait a frame and re-measure after transform so html2canvas captures correctly
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+
+            // --- CAPTURE: html2canvas directly ---
+            let canvas;
+            try {
+                canvas = await window.html2canvas(clone, {
+                scale: 5,
+                backgroundColor: "#ffffff",
+                useCORS: true,
+                logging: true,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: document.documentElement.clientWidth,
+                windowHeight: document.documentElement.clientHeight,
+                });
+            } catch (e) {
+                console.error("🧨 html2canvas failed:", e);
+                clone.remove();
+                alert("html2canvas failed. Check console.");
+                return;
+            }
+
+            // If this is white, the PDF will be white.
+            console.log("✅ canvas captured:", { w: canvas.width, h: canvas.height });
+
+            // --- PDF: jsPDF directly ---
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ unit: "in", format: "letter", orientation: "portrait" });
+
+                const imgData = canvas.toDataURL("image/png");
+
+                const margin = PDF_MARGIN_IN;
+                const pageW = 8.5;
+                const pageH = 11;
+
+                const usableWIn = pageW - 2 * margin;
+                const usableHIn = pageH - 2 * margin;
+
+                // Fit image inside usable area
+                let imgWIn = usableWIn;
+                let imgHIn = (canvas.height * imgWIn) / canvas.width;
+
+                if (imgHIn > usableHIn) {
+                imgHIn = usableHIn;
+                imgWIn = (canvas.width * imgHIn) / canvas.height;
+                }
+
+                // Center it (optional but nice)
+                const x = margin + (usableWIn - imgWIn) / 2;
+                const y = margin + (usableHIn - imgHIn) / 2;
+
+                pdf.addImage(imgData, "PNG", x, y, imgWIn, imgHIn);
+                pdf.save(filename);
+                console.log("✅ PDF download triggered");
+            } catch (e) {
+                console.error("🧨 jsPDF build failed:", e);
+                alert("PDF generation failed. Check console.");
+            } finally {
+                clone.remove();
+            }
+        };
+
+
+
+
+
+        // --- DOCX Generation Strategy Selector ---
+        const generateFromTemplate = () => {
+        console.log("✅ generateFromTemplate start (TOP)", {
+            templateFileType: templateFile ? Object.prototype.toString.call(templateFile) : null,
+            templateFileByteLength: templateFile?.byteLength,
+            hasPizZip: typeof window.PizZip !== "undefined",
+            hasDocxtemplaterWindow: typeof window.docxtemplater !== "undefined",
+            hasDocxtemplaterGlobal: typeof docxtemplater !== "undefined",
+            hasSaveAs: typeof window.saveAs !== "undefined",
+            hasSaveAsGlobal: typeof saveAs !== "undefined",
+        });
+
+        // 1) Confirm we have the template bytes
+        if (!templateFile) {
+            console.error("🧨 templateFile is null/undefined");
+            alert("No template loaded (templateFile is empty).");
+            return;
+        }
+
+        // 2) Run a saveAs smoke test immediately (this should ALWAYS download)
+        try {
+            const saver = window.saveAs || saveAs;
+            console.log("✅ saveAs resolved:", saver);
+            const testBlob = new Blob(["saveAs works"], { type: "text/plain" });
+            saver(testBlob, "saveAs_test.txt");
+            console.log("✅ saveAs_test.txt triggered");
+        } catch (e) {
+            console.error("🧨 saveAs smoke test failed:", e);
+            alert("saveAs is not working. Check console.");
+            return;
+        }
+
+        // 3) Quote data (can throw if something unexpected)
+        let q;
+        try {
+            q = getQuoteData();
+            console.log("✅ getQuoteData ok", { total: q.total });
+        } catch (e) {
+            console.error("🧨 getQuoteData failed:", e);
+            alert("getQuoteData failed. Check console.");
+            return;
+        }
+
+        // 4) PizZip
+        const PizZipCtor = window.PizZip || window.Pizzip;
+        if (!PizZipCtor) {
+        console.error("🧨 PizZip missing (no window.PizZip or window.Pizzip)", {
+            PizZip: window.PizZip,
+            Pizzip: window.Pizzip
+        });
+        alert("Error: PizZip library not loaded (PizZip global missing).");
+        return;
+        }
+
+        let zip;
+        try {
+            console.log("✅ constructing PizZip from templateFile…");
+            zip = new PizZipCtor(templateFile);
+            console.log("✅ PizZip constructed");
+        } catch (e) {
+            console.error("🧨 PizZip failed to read template (bad docx?):", e);
+            alert("Template load failed. Ensure the uploaded file is a valid .docx.");
+            return;
+        }
+
+        // 5) docxtemplater constructor
+        let DocxtemplaterCtor;
+        try {
+            DocxtemplaterCtor = window.docxtemplater || docxtemplater;
+            console.log("✅ DocxtemplaterCtor resolved:", DocxtemplaterCtor);
+            if (!DocxtemplaterCtor) throw new Error("Docxtemplater constructor is undefined");
+        } catch (e) {
+            console.error("🧨 Could not resolve docxtemplater constructor:", e);
+            alert("docxtemplater not found. Library may not be loading.");
+            return;
+        }
+
+        // 6) Create doc
+        let doc;
+        try {
+            doc = new DocxtemplaterCtor(zip, {
+            paragraphLoop: true,
+            linebreaks: true,
+            nullGetter: () => "",
+            });
+            console.log("✅ docxtemplater instance created");
+        } catch (e) {
+            console.error("🧨 docxtemplater init failed:", e);
+            alert("Error initializing docxtemplater. Check console.");
+            return;
+        }
+
+        // 7) Data keys (keep yours, I’m not changing your mapping)
+        const data = {
+            trackingNumber: quoteInfo.trackingNumber || "",
+            date: new Date().toLocaleDateString(),
+
+            piName: quoteInfo.piName || "",
+            piEmail: quoteInfo.piEmail || "",
+            piInst: quoteInfo.piInst || "",
+            projectName: projectName || "",
+
+            miblrate: `${getRate("mibl_rate")}`,
+            mcrate: `${getRate("mc_rate")}`,
+            mcoprate: `${getRate("mc_op_rate")}`,
+            mcserrate: `${getRate("mc_service_rate")}`,
+
+            wolverineBeamHours: q.breakdown.Wolverine.beamHours.toFixed(2),
+            wolverineSetups: String(q.breakdown.Wolverine.setups),
+            whr: (q.breakdown.Wolverine.beamHours * getRate("mibl_rate")).toFixed(2),
+            wset: (q.breakdown.Wolverine.setups * 4 * getRate("mibl_rate")).toFixed(2),
+
+            maizeBeamHours: q.breakdown.Maize.beamHours.toFixed(2),
+            maizeSetups: String(q.breakdown.Maize.setups),
+            mhr: (q.breakdown.Maize.beamHours * getRate("mibl_rate")).toFixed(2),
+            mset: (q.breakdown.Maize.setups * 4 * getRate("mibl_rate")).toFixed(2),
+
+            blueBeamHours: q.breakdown.Blue.beamHours.toFixed(2),
+            blueSetups: String(q.breakdown.Blue.setups),
+            bhr: (q.breakdown.Blue.beamHours * getRate("mibl_rate")).toFixed(2),
+            bset: (q.breakdown.Blue.setups * 4 * getRate("mibl_rate")).toFixed(2),
+
+            monitoringHours: String(q.monitorHoursUsed || 0),
+            mont: q.monitorCost.toFixed(2),
+            miblStaffHours: String(quoteInfo.miblStaffHours || 0),
+            miblstaff: q.staffCost.toFixed(2),
+
+            mcInstrumentHours: mc2Results.instrumentHours.toFixed(2),
+            mcist: q.mcInstCost.toFixed(2),
+            mcOperatorHours: mc2Results.staffHours.toFixed(2),
+            mcop: q.mcStaffCost.toFixed(2),
+            mcServiceHours: mc2Results.serviceHours.toFixed(2),
+            mcser: q.mcServiceCost.toFixed(2),
+
+            corPersonRate: `${getRate("cor_person_rate")}`,
+            corrosionHours: String(quoteInfo.corrosionHours || 0),
+            corperson: q.corPersonCost.toFixed(2),
+            supplyCost: String(quoteInfo.supplyCost || 0),
+            supplyUnits: String(quoteInfo.supplyUnits || 0),
+            corsup: q.corSupCost.toFixed(2),
+
+            mibl_sub_total: q.miblSub.toFixed(2),
+            mc_sub_total: q.mcSub.toFixed(2),
+            cor_sub_total: q.corSub.toFixed(2),
+            direct: q.direct.toFixed(2),
+            indirectsPct: String(getRate("indirects")),
+            indirect: q.indirect.toFixed(2),
+            total: q.total.toFixed(2),
+        };
+
+        // 8) Render
+        try {
+            console.log("✅ calling setData/render…", data);
+            doc.setData(data);
+            doc.render();
+            console.log("✅ doc.render() complete");
+        } catch (e) {
+            console.error("🧨 doc.render() failed:", e);
+            // If docxtemplater provides details, show them:
+            if (e.properties) console.error("Docxtemplater error details:", e.properties);
+            alert("Template render failed. Check console for which tag/key is missing.");
+            return;
+        }
+
+        // 9) Generate blob + download
+        let out;
+        try {
+            console.log("✅ generating blob…");
+            out = doc.getZip().generate({
+            type: "blob",
+            mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            });
+            console.log("✅ blob generated", { size: out?.size, type: out?.type });
+        } catch (e) {
+            console.error("🧨 blob generation failed:", e);
+            alert("Blob generation failed. Check console.");
+            return;
+        }
+
+        try {
+            const saver = window.saveAs || saveAs;
+            console.log("✅ downloading docx…");
+            saver(out, `MIBL_Quote_${(projectName || "Draft").replace(/[^a-z0-9]/gi, "_")}.docx`);
+            console.log("✅ saveAs called for docx");
+        } catch (e) {
+            console.error("🧨 saveAs(docx) failed:", e);
+            alert("saveAs failed on the docx. Check console.");
+        }
+        };
+
+        // --- DOCX Generation Strategy Selector (RESTORED) ---
+        const generateInvoice = () => {
+        console.log("✅ generateInvoice clicked", { templateLoaded: !!templateFile });
+
+        if (templateFile) {
+            return generateFromTemplate();
+        }
+        return generateDefaultDocx();
+        };
+
+        const generateDefaultDocx = () => {
+        console.log("✅ generateDefaultDocx start");
+        alert("generateDefaultDocx ran (no template).");
+        };
+
+
+        // --- Renderers ---
+        
+        const renderQuote = () => {
+            const q = getQuoteData();
+            const data = q; //
+
+            const quotedIrr = displayTotals.irr * safetyFactor;
+            const quotedSetup = displayTotals.setup;      // usually NOT safety’d (keep raw)
+            const quotedSource = displayTotals.source;    // usually NOT safety’d (keep raw)
+            
+            // Calculate breakdown totals for dashboard
+            const totalExp = displayTotals.totalExps || numExperiments;
+            const totalSamples = displayTotals.totalSamples || (numExperiments * samplesPerExperiment);
+                        
+            return (
+                <div className="space-y-6">
+
+                {/* Off-screen invoice layout for PDF generation */}
+                <div
+                id="invoice-pdf" 
+                style={{
+                    position: "fixed",
+                    left: "0px",
+                    top: "0px",
+                    width: "8.5in",
+                    padding: "0.4in",
+                    background: "white",
+                    color: "#111827",
+                    fontFamily: "Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+                    opacity: 0,
+                    pointerEvents: "none",
+                    zIndex: -1,
+                }}
+                >
+                {/* Header */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "3px solid #ffcb05", paddingBottom: "12px", marginBottom: "14px" }}>
+                    <div>
+                    <div style={{ fontSize: "18px", fontWeight: 800, color: "#00274c" }}>Michigan Ion Beam Laboratory (MIBL)</div>
+                      <div style={{ fontSize: "10px", color: "#374151", marginTop: "6px", lineHeight: 1.3 }}>
+                        2600 Draper Rd., Room 120<br />
+                        Ann Arbor, MI 48109-2145<br />
+                        (734) 936-0131<br />
+                        mibl.engin.umich.edu
+                    </div>
+                    </div>
+                    <div style={{ textAlign: "right", fontSize: "10px" }}>
+                    <div><span style={{ fontWeight: 700 }}>Date:</span> {new Date().toLocaleDateString()}</div>
+                    <div><span style={{ fontWeight: 700 }}>Tracking #:</span> {quoteInfo.trackingNumber || "—"}</div>
+                    </div>
+                </div>
+
+                {/* Project / PI */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "14px" }}>
+                    <div style={{ border: "1px solid #e5e7eb", borderRadius: "10px", padding: "10px" }}>
+                    <div style={{ fontSize: "10px", letterSpacing: "0.06em", color: "#6b7280", fontWeight: 800 }}>PROJECT</div>
+                    <div style={{ marginTop: "6px", fontSize: "13px" }}><span style={{ fontWeight: 700 }}>Name:</span> {projectName || "—"}</div>
+                    </div>
+                    <div style={{ border: "1px solid #e5e7eb", borderRadius: "10px", padding: "10px" }}>
+                    <div style={{ fontSize: "10px", letterSpacing: "0.06em", color: "#6b7280", fontWeight: 800 }}>PI / CONTACT</div>
+                    <div style={{ marginTop: "6px", fontSize: "13px" }}><span style={{ fontWeight: 700 }}>PI:</span> {quoteInfo.piName || "—"}</div>
+                    <div style={{ fontSize: "11px" }}><span style={{ fontWeight: 700 }}>Email:</span> {quoteInfo.piEmail || "—"}</div>
+                    <div style={{ fontSize: "11px" }}><span style={{ fontWeight: 700 }}>Institution:</span> {quoteInfo.piInst || "—"}</div>
+                    </div>
+                </div>
+
+                {/* Breakdown Table(s) — MOVE ABOVE COST SUMMARY */}
+                <div style={{ border: "1px solid #e5e7eb", borderRadius: "12px", overflow: "hidden", marginBottom: "14px" }}>
+                <div style={{ background:"#00274c", color:"white", padding:"10px", fontWeight:900, lineHeight: "1.2" }}>
+                    Detailed Breakdown
+                </div>
+
+                {/* --- MIBL --- */}
+                <div style={{ background:"#FFCB05", color:"#00274C", padding:"10px", fontWeight:900, lineHeight: "1.2" }}>
+                MIBL Beam &amp; Setup Breakdown
+                </div>
+
+         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+                <thead>
+                    <tr style={{ background: "#f9fafb", textAlign: "left" }}>
+                    <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb" }}>Line Item</th>
+                    <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Hours</th>
+                    <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Rate</th>
+                    <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Cost</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {["Wolverine", "Maize", "Blue"].map((acc) => {
+                    const beam = q.breakdown[acc].beamHours;
+                    const setups = q.breakdown[acc].setups;
+                    const rate = getRate("mibl_rate");
+
+                    const setupHours = setups * 4;
+                    const totalHours = beam + setupHours;
+
+                    const beamCost = beam * rate;
+                    const setupCost = setupHours * rate;
+                    const totalCost = beamCost + setupCost;
+
+                    return (
+                        <React.Fragment key={acc}>
+                        <tr>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", fontWeight: 800 }}>{acc} — Beam Time</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>{beam.toFixed(2)}</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${rate}/hr</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${beamCost.toFixed(2)}</td>
+                        </tr>
+
+                        <tr>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6" }}>{acc} — Setup ({setups} × 4h)</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>{setupHours.toFixed(2)}</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${rate}/hr</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${setupCost.toFixed(2)}</td>
+                        </tr>
+
+                        <tr>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", color: "#374151" }}>{acc} — Subtotal</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right", color: "#374151" }}>{totalHours.toFixed(2)}</td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb" }}></td>
+                            <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right", color: "#374151" }}>${totalCost.toFixed(2)}</td>
+                        </tr>
+                        </React.Fragment>
+                    );
+                    })}
+
+                    {/* Separate lines for Monitoring and MIBL Staff Assist */}
+                    <tr>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", fontWeight: 800 }}>
+                        24/7 Monitoring
+                    </td>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", textAlign: "right" }}>
+                        {(data.monitorHoursUsed || 0).toFixed(2)}
+                    </td>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", textAlign: "right" }}>
+                        ${getRate("monitoring_rate")}/hr
+                    </td>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", textAlign: "right" }}>
+                        ${q.monitorCost.toFixed(2)}
+                    </td>
+                    </tr>
+
+                    <tr>
+                    <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", fontWeight: 800 }}>
+                        MIBL Staff Assist
+                    </td>
+                    <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>
+                        {(quoteInfo.miblStaffHours || 0).toFixed(2)}
+                    </td>
+                    <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>
+                        ${getRate("mibl_rate")}/hr
+                    </td>
+                    <td style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>
+                        ${q.staffCost.toFixed(2)}
+                    </td>
+                    </tr>
+
+                    <tr>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", fontWeight: 900 }}>
+                        MIBL Subtotal
+                    </td>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb" }}></td>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb" }}></td>
+                    <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", textAlign: "right", fontWeight: 900 }}>
+                        ${q.miblSub.toFixed(2)}
+                    </td>
+                    </tr>
+                </tbody>
+                </table>
+
+
+                {/* --- MC2 --- */}
+                <div style={{ background:"#FFCB05", color:"#00274C", padding:"10px", fontWeight:900, lineHeight: "1.2" }}>
+                    MC2 Characterization Breakdown
+                </div>
+         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+                    <thead>
+                    <tr style={{ background: "#f9fafb", textAlign: "left" }}>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb" }}>Category</th>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Hours</th>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Rate</th>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Cost</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6" }}>Instrument Time</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>{mc2Results.instrumentHours.toFixed(2)}</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${getRate("mc_rate")}/hr</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${q.mcInstCost.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6" }}>Operator Assist (Staff)</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>{mc2Results.staffHours.toFixed(2)}</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${getRate("mc_op_rate")}/hr</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${q.mcStaffCost.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6" }}>Service Activities</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>{mc2Results.serviceHours.toFixed(2)}</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${getRate("mc_service_rate")}/hr</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${q.mcServiceCost.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", fontWeight: 800 }}>MC2 Subtotal</td>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb" }}></td>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb" }}></td>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", textAlign: "right", fontWeight: 800 }}>${q.mcSub.toFixed(2)}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                {/* --- Corrosion --- */}
+                <div style={{ background:"#FFCB05", color:"#00274C", padding:"10px", fontWeight:900, lineHeight: "1.2" }}>
+                    Corrosion Breakdown
+                </div>
+         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+                    <thead>
+                    <tr style={{ background: "#f9fafb", textAlign: "left" }}>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb" }}>Category</th>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Qty</th>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Rate / Unit</th>
+                        <th style={{ padding: "8px", borderBottom: "1px solid #e5e7eb", textAlign: "right" }}>Cost</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6" }}>Labor (Person Hours)</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>{(quoteInfo.corrosionHours || 0).toFixed(2)}</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${getRate("cor_person_rate")}/hr</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${q.corPersonCost.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6" }}>Supplies</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>{(quoteInfo.supplyUnits || 0).toFixed(0)}</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${(quoteInfo.supplyCost || 0).toFixed(2)}/unit</td>
+                        <td style={{ padding: "8px", borderBottom: "1px solid #f3f4f6", textAlign: "right" }}>${q.corSupCost.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", fontWeight: 800 }}>Corrosion Subtotal</td>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb" }}></td>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb" }}></td>
+                        <td style={{ padding: "8px", borderTop: "1px solid #e5e7eb", textAlign: "right", fontWeight: 800 }}>${q.corSub.toFixed(2)}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+
+                {/* Cost Summary — NOW BELOW breakdown */}
+                <div style={{ border: "1px solid #e5e7eb", borderRadius: "12px", padding: "12px", marginBottom: "14px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                    <div style={{ fontSize: "12px", fontWeight: 900, color: "#00274c" }}>Cost Summary</div>
+                    <div style={{ fontSize: "16px", fontWeight: 900, color: "#047857" }}>${q.total.toFixed(2)}</div>
+                </div>
+                <div style={{ marginTop: "10px", fontSize: "11px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}><span>MIBL Subtotal</span><span>${q.miblSub.toFixed(2)}</span></div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}><span>MC2 Subtotal</span><span>${q.mcSub.toFixed(2)}</span></div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}><span>Corrosion Subtotal</span><span>${q.corSub.toFixed(2)}</span></div>
+                    <div style={{ borderTop: "1px solid #e5e7eb", marginTop: "8px", paddingTop: "8px", display: "flex", justifyContent: "space-between", fontWeight: 800 }}>
+                    <span>Direct</span><span>${q.direct.toFixed(2)}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>Indirects ({getRate("indirects")}%)</span><span>${q.indirect.toFixed(2)}</span>
+                    </div>
+                </div>
+                </div>
+
+                {/* Updated Disclaimer */}
+                <div style={{ marginTop: "12px", fontSize: "10px", color: "#6b7280", lineHeight: 1.35 }}>
+                University of Michigan certifications of compliance are based on reasonable knowledge of programs authorized and supervised by the University of Michigan as of the date of signing. University policy is to operate federally supported research and programs in compliance with all applicable grant terms and conditions, consistent with current laws, regulations, and related court decisions. The University regularly examines programs, policies, and activities for compliance with university policy and federal and state law. The University’s ongoing compliance processes include monitoring, audits, a compliance hotline, and training. The University takes prompt corrective action when it has direct knowledge of non-compliance with policy or applicable law.
+                </div>
+
+                </div>
+
+
+                    {/* NEW: Quote Summary Dashboard */}
+                    <div className="card p-6 border-t-4 border-umblue bg-gradient-to-br from-blue-50 to-white">
+                        <h2 className="text-xl font-bold text-umblue mb-4 flex items-center gap-2">
+                            <Icon name="bar-chart" className="text-umblue" />
+                            Quote Summary Dashboard
+                        </h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="bg-white p-3 rounded shadow-sm border border-blue-100">
+                                <span className="block text-xs uppercase font-bold text-gray-500">Total Experiments</span>
+                                <span className="block text-xl font-bold text-gray-800">{totalExp}</span>
+                                <span className="text-xs text-gray-400">Total Samples: {totalSamples}</span>
+                            </div>
+                            <div className="bg-white p-3 rounded shadow-sm border border-blue-100">
+                                <span className="block text-xs uppercase font-bold text-gray-500">Irradiation Hours</span>
+                                <span className="block text-xl font-bold text-umblue">
+                                    {quotedIrr.toFixed(1)} <span className="text-sm font-normal text-gray-500">Beam</span>
+                                </span>
+                                <span className="text-xs text-gray-400">
+                                    + {quotedSetup.toFixed(1)} Setup + {quotedSource.toFixed(1)} Maint.
+                                </span>
+                                <span className="text-xs text-gray-500 font-semibold">
+                                    Safety factor applied: x{safetyFactor}
+                                </span>
+                            </div>
+                            <div className="bg-white p-3 rounded shadow-sm border border-blue-100">
+                                <span className="block text-xs uppercase font-bold text-gray-500">MC2 Hours</span>
+                                <div className="flex gap-2 items-baseline">
+                                    <span className="block text-xl font-bold text-purple-700">{mc2Results.instrumentHours.toFixed(1)}</span>
+                                    <span className="text-xs text-gray-500">Inst.</span>
+                                </div>
+                                <span className="text-xs text-gray-400">{mc2Results.staffHours.toFixed(1)} Staff / {mc2Results.serviceHours.toFixed(1)} Svc</span>
+                            </div>
+                            <div className="bg-white p-3 rounded shadow-sm border border-blue-100">
+                                <span className="block text-xs uppercase font-bold text-gray-500">Est. Total Cost</span>
+                                <span className="block text-2xl font-bold text-green-700">${data.total.toFixed(0)}</span>
+                                <span className="text-xs text-gray-400">Direct: ${data.direct.toFixed(0)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Header Controls */}
+                    <div className="card p-6 flex flex-col md:flex-row gap-6">
+                        <div className="flex-1 space-y-4">
+                            <div className="flex justify-between border-b pb-2">
+                                <h2 className="text-lg font-bold">Project Details</h2>
+                                <div className="text-xs text-gray-500 text-right">
+                                    <label className="cursor-pointer hover:text-umblue flex items-center gap-1">
+                                        <Icon name="file-text" size={14} /> 
+                                        {templateFile ? "Template Loaded" : "Upload .docx Template"}
+                                        <input type="file" className="hidden" accept=".docx" ref={templateFileRef} onChange={handleTemplateUpload} />
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="input-group"><label>PI Name</label><input type="text" value={quoteInfo.piName} onChange={e=>setQuoteInfo({...quoteInfo, piName:e.target.value})} /></div>
+                                <div className="input-group"><label>PI Email</label><input type="text" value={quoteInfo.piEmail} onChange={e=>setQuoteInfo({...quoteInfo, piEmail:e.target.value})} /></div>
+                                <div className="input-group col-span-2"><label>Institution</label><input type="text" value={quoteInfo.piInst} onChange={e=>setQuoteInfo({...quoteInfo, piInst:e.target.value})} /></div>
+
+                                <div className="input-group col-span-2">
+                                    <label>Quote / Tracking Number</label>
+                                    <input
+                                    type="text"
+                                    value={quoteInfo.trackingNumber}
+                                    onChange={e => setQuoteInfo({ ...quoteInfo, trackingNumber: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            
+                            <h2 className="text-lg font-bold border-b pb-2 pt-4">Additional Charges</h2>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="input-group">
+                                    <div className="flex items-center justify-between">
+                                        <label>24/7 Monitoring (hrs)</label>
+
+                                        <label className="flex items-center gap-2 text-xs text-gray-600">
+                                        <input
+                                            type="checkbox"
+                                            checked={!!quoteInfo.autoMonitor}
+                                            onChange={e => setQuoteInfo({ ...quoteInfo, autoMonitor: e.target.checked })}
+                                        />
+                                        Auto (sync)
+                                        </label>
+                                    </div>
+
+                                    <input
+                                        type="number"
+                                        value={(quoteInfo.autoMonitor ? (data.autoMonitorHours || 0) : (quoteInfo.monitorHours || 0))}
+                                        disabled={!!quoteInfo.autoMonitor}
+                                        onChange={e => setQuoteInfo({ ...quoteInfo, monitorHours: parseFloat(e.target.value) || 0 })}
+                                    />
+
+                                    <div className="text-[11px] text-gray-500 mt-1">
+                                        {quoteInfo.autoMonitor
+                                        ? `Auto = ${ (data.autoMonitorHours || 0).toFixed(2) } hrs (based on beam window)`
+                                        : `Manual override (auto would be ${ (data.autoMonitorHours || 0).toFixed(2) } hrs)`}
+                                    </div>
+                                    </div>
+                                <div className="input-group"><label>MIBL Staff Assist (hrs)</label><input type="number" value={quoteInfo.miblStaffHours} onChange={e=>setQuoteInfo({...quoteInfo, miblStaffHours:parseFloat(e.target.value)||0})} /></div>
+                                <div className="input-group"><label>Corrosion Person (hrs)</label><input type="number" value={quoteInfo.corrosionHours} onChange={e=>setQuoteInfo({...quoteInfo, corrosionHours:parseFloat(e.target.value)||0})} /></div>
+                                <div className="input-group"><label>Supply Unit Cost ($)</label><input type="number" value={quoteInfo.supplyCost} onChange={e=>setQuoteInfo({...quoteInfo, supplyCost:parseFloat(e.target.value)||0})} /></div>
+                                <div className="input-group"><label>Supply Units (#)</label><input type="number" value={quoteInfo.supplyUnits} onChange={e=>setQuoteInfo({...quoteInfo, supplyUnits:parseFloat(e.target.value)||0})} /></div>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 border-l pl-6 space-y-4">
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-lg font-bold">Rates Configuration</h2>
+                                <div className="flex gap-2 text-xs">
+                                    <button onClick={() => downloadCSV(rates, "MIBL_Rates.csv")} className="bg-gray-200 px-2 py-1 rounded">Export</button>
+                                    <label className="bg-gray-200 px-2 py-1 rounded cursor-pointer">Import<input type="file" className="hidden" accept=".csv" ref={ratesFileRef} onChange={handleRateUpload}/></label>
+                                </div>
+                            </div>
+                            
+                            {/* Rate Type Selector */}
+                            <div className="flex bg-gray-100 p-1 rounded mb-2">
+                                <button onClick={() => handleRateChange('internal')} className={`flex-1 py-1 px-2 rounded text-sm ${rateType === 'internal' ? 'bg-white shadow text-umblue font-bold' : 'text-gray-600'}`}>Internal (UM)</button>
+                                <button onClick={() => handleRateChange('external')} className={`flex-1 py-1 px-2 rounded text-sm ${rateType === 'external' ? 'bg-white shadow text-umblue font-bold' : 'text-gray-600'}`}>External</button>
+                                <button onClick={() => handleRateChange('nsuf')} className={`flex-1 py-1 px-2 rounded text-sm ${rateType === 'nsuf' ? 'bg-white shadow text-umblue font-bold' : 'text-gray-600'}`}>NSUF</button>
+                            </div>
+
+                            <div className="bg-gray-50 p-2 rounded max-h-64 overflow-y-auto text-sm border">
+                                <table className="w-full">
+                                    <thead><tr className="text-left text-gray-500"><th>Rate Name</th><th>Value</th><th>Unit</th></tr></thead>
+                                    <tbody>
+                                        {rates.map((r, idx) => (
+                                            <tr key={r.id}>
+                                                <td className="py-1">{r.label}</td>
+                                                <td className="py-1"><input type="number" className="w-16 border rounded px-1" value={r.value} onChange={(e) => { const n=[...rates]; n[idx].value=parseFloat(e.target.value); setRates(n); }} /></td>
+                                                <td className="py-1 text-gray-500">{r.unit}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div className="bg-blue-50 p-4 rounded border border-blue-200 text-center">
+                                <span className="block text-sm uppercase font-bold text-umblue">Total Project Cost</span>
+                                <span className="block text-4xl font-bold text-umblue">${data.total.toFixed(2)}</span>
+                                <button onClick={generatePdf} className="btn-primary w-full mt-4 flex items-center justify-center gap-2">
+                                    <Icon name="file-text" /> Download Quote PDF
+                                </button>
+                                <button onClick={downloadTimeCSV} className="btn-secondary w-full mt-2 flex items-center justify-center gap-2">
+                                    <Icon name="download" size={18} /> Download Full Hours Breakdown (CSV)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const renderCalculator = () => (
+            <div className="space-y-6">
+                {/* ... (Keep existing Calculator UI structure but ensure state flows) ... */}
+                {/* Simplified Calculator View for Brevity - Actual logic preserved in state above */}
+                <div className="card p-4 flex flex-col md:flex-row gap-4 items-center bg-blue-50 border border-blue-100">
+                <div className="flex-grow w-full">
+                    <label className="text-sm font-bold text-umblue uppercase tracking-wide">Project / Experiment Name</label>
+                    <input
+                    type="text"
+                    placeholder="e.g. RadHard Test Series A"
+                    value={projectName}
+                    onChange={(e) => setProjectName(e.target.value)}
+                    className="w-full mt-1 p-2 rounded border border-blue-200"
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2 items-stretch md:items-end w-full md:w-auto">
+                    <div className="text-right whitespace-nowrap hidden md:block">
+                    <span className="block text-sm text-umblue font-semibold uppercase tracking-wider">Total Hours</span>
+                    <span className="block text-3xl font-bold text-umblue">{displayTotals.grandTotal.toFixed(2)} h</span>
+                    </div>
+
+                    <button onClick={downloadTimeCSV} className="btn-secondary w-full md:w-48">
+                    <Icon name="download" size={16} /> Export Time CSV
+                    </button>
+                </div>
+                </div>
+
+                <div className="card p-6 border-l-4 border-umblue">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-bold text-gray-800">Experiment Configurator</h2>
+                        <div className="flex gap-2 text-sm">
+                            <button onClick={() => setQuickConfig('single')} className="bg-gray-100 px-3 py-1 rounded">Single</button>
+                            <button onClick={() => setQuickConfig('dual')} className="bg-gray-100 px-3 py-1 rounded">Dual</button>
+                            <button onClick={() => setQuickConfig('triple')} className="bg-gray-100 px-3 py-1 rounded">Triple</button>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                        <div className="input-group"><label>Experiments in Group</label><input type="number" min="1" value={numExperiments} onChange={(e) => setNumExperiments(Math.max(1, parseInt(e.target.value) || 0))} /></div>
+                        <div className="input-group"><label>Samples/Exp</label><input type="number" min="1" value={samplesPerExperiment} onChange={(e) => setSamplesPerExperiment(Math.max(1, parseInt(e.target.value) || 0))} /></div>
+                        <div className="input-group"><label>Safety Factor</label><input type="number" step="0.1" min="1.0" value={safetyFactor} onChange={(e) => setSafetyFactor(parseFloat(e.target.value) || 1.0)} /></div>
+                        <div className="flex items-center justify-end"><button onClick={handleAddToQuote} className="btn-primary w-full md:w-auto h-10"><Icon name="plus" size={18} /> Add to Queue</button></div>
+                    </div>
+
+                    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                        {ACCELERATORS.map(accName => {
+                            const data = accelData[accName];
+                            const results = currentData.results[accName] || {};
+                            const currentCathode = cathodes.find(c => c.id === parseInt(data.cathodeId));
+                            return (
+                                <div key={accName} className={`border rounded-lg p-3 ${data.enabled ? 'border-blue-300 bg-white' : 'bg-gray-50 opacity-60'}`}>
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h3 className="font-bold">{accName}</h3>
+                                        <button onClick={() => toggleAccel(accName)} className="text-xs px-2 py-1 bg-gray-200 rounded">{data.enabled ? 'ON' : 'OFF'}</button>
+                                    </div>
+                                    {data.enabled && (
+                                        <div className={`space-y-2 text-sm ${results.isSynced ? 'opacity-90' : ''}`}>
+                                            <select className="w-full border rounded p-1" value={data.cathodeId} onChange={(e) => updateAccel(accName, 'cathodeId', parseInt(e.target.value))}>{cathodes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
+                                            <div className="flex gap-1 mt-2">
+                                                <select 
+                                                    disabled={results.isSynced} 
+                                                    className="w-24 border rounded px-1 text-sm bg-white" 
+                                                    value={data.targetType} 
+                                                    onChange={(e) => updateAccel(accName, 'targetType', e.target.value)}
+                                                >
+                                                    <option value="dose">Dose</option>
+                                                    <option value="fluence">Fluence</option>
+                                                </select>
+                                                
+                                                <div className="relative w-full">
+                                                    <input 
+                                                        disabled={results.isSynced} 
+                                                        type="number" 
+                                                        className="w-full border rounded pl-2 pr-16 py-1 text-sm outline-none focus:border-umblue focus:ring-1 focus:ring-umblue disabled:bg-gray-100" 
+                                                        value={data.targetType === 'dose' ? data.targetDose : data.targetFluence} 
+                                                        onChange={(e) => updateAccel(accName, data.targetType === 'dose' ? 'targetDose' : 'targetFluence', e.target.value)} 
+                                                    />
+                                                    {/* Helper Unit Pill */}
+                                                    <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
+                                                        <span className="text-[10px] sm:text-xs font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">
+                                                            {data.targetType === 'dose' ? 'dpa' : (data.fluenceUnit === 'm2' ? 'ions/m²' : 'ions/cm²')}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <select disabled={results.isSynced} className="w-full border rounded p-1" value={data.rateType} onChange={(e) => updateAccel(accName, 'rateType', e.target.value)}><option value="std_rate">Standard Rate</option><option value="current">Beam Current</option><option value="flux">Flux</option><option value="custom_rate">Custom Rate</option></select>
+
+                                            {/* SRIM conversion factor (only shown when it is used in the time calculation) */}
+                                            {!results.isSynced && (
+                                                (
+                                                    (data.targetType === 'dose' && (data.rateType === 'flux' || data.rateType === 'current')) ||
+                                                    (data.targetType === 'fluence' && (data.rateType === 'std_rate' || data.rateType === 'custom_rate'))
+                                                )
+                                            ) && (
+                                                <div className="relative w-full mt-2">
+                                                    <input 
+                                                        type="number" 
+                                                        placeholder="SRIM conversion factor" 
+                                                        className="w-full border rounded pl-2 pr-24 py-1 text-sm outline-none focus:border-umblue focus:ring-1 focus:ring-umblue disabled:bg-gray-100" 
+                                                        value={data.srimFactor || ''} 
+                                                        onChange={(e) => updateAccel(accName, 'srimFactor', e.target.value)} 
+                                                    />
+                                                    <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
+                                                        <span className="text-[10px] sm:text-xs font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">
+                                                            dpa·cm²/ion
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-[10px] text-gray-500 mt-1">
+                                                        SRIM/TRIM-derived factor used to convert between fluence and dose.
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {!results.isSynced && data.rateType === 'current' && (
+                                                <div className="relative w-full mt-2">
+                                                    <input 
+                                                        type="number" 
+                                                        placeholder="Current" 
+                                                        className="w-full border rounded pl-2 pr-10 py-1 text-sm outline-none focus:border-umblue focus:ring-1 focus:ring-umblue disabled:bg-gray-100" 
+                                                        value={data.current || ''} 
+                                                        onChange={(e) => updateAccel(accName, 'current', e.target.value)} 
+                                                    />
+                                                    <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
+                                                        <span className="text-[10px] sm:text-xs font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">
+                                                            µA
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {!results.isSynced && data.rateType === 'flux' && (
+                                                <div className="relative w-full mt-2">
+                                                    <input 
+                                                        type="number" 
+                                                        placeholder="Flux" 
+                                                        className="w-full border rounded pl-2 pr-20 py-1 text-sm outline-none focus:border-umblue focus:ring-1 focus:ring-umblue disabled:bg-gray-100" 
+                                                        value={data.flux || ''} 
+                                                        onChange={(e) => updateAccel(accName, 'flux', e.target.value)} 
+                                                    />
+                                                    <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
+                                                        <span className="text-[10px] sm:text-xs font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">
+                                                            {data.fluenceUnit === 'm2' ? 'ions/m²/s' : 'ions/cm²/s'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {!results.isSynced && data.rateType === 'custom_rate' && (
+                                                <div className="relative w-full mt-2">
+                                                    <input 
+                                                        type="number" 
+                                                        placeholder="Rate" 
+                                                        className="w-full border rounded pl-2 pr-14 py-1 text-sm outline-none focus:border-umblue focus:ring-1 focus:ring-umblue disabled:bg-gray-100" 
+                                                        value={data.doseRate || ''} 
+                                                        onChange={(e) => updateAccel(accName, 'doseRate', e.target.value)} 
+                                                    />
+                                                    <div className="absolute inset-y-0 right-0 flex items-center pr-1 pointer-events-none">
+                                                        <span className="text-[10px] sm:text-xs font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">
+                                                            dpa/s
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="bg-gray-100 p-2 rounded text-xs flex justify-between font-bold">
+                                                <span>Beam: {formatBeamTime(results.irrTime)}</span>
+                                                <span>Total: {results.total ? results.total.toFixed(2) : 0} h</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+                
+                {/* Queue Summary Block (Condensed) */}
+                <div className="card p-6">
+                    <div className="flex justify-between items-center mb-2">
+                        <h2 className="text-xl font-bold">Queue ({quoteQueue.length} Groups)</h2>
+                        {quoteQueue.length > 0 && <button onClick={() => setQuoteQueue([])} className="text-red-500 text-sm">Clear</button>}
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded text-sm text-gray-600">
+                        {quoteQueue.length === 0 ? "No items in queue." : (
+                        <div className="space-y-2">
+                            {queueDetails.map((i) => (
+                                <div key={i.id} className="py-2 border-b">
+                                    <div className="flex justify-between items-start gap-3">
+                                        <div className="font-semibold text-gray-800">
+                                            Group {i.idx}: {i.description} (x{i.numExperiments})
+                                        </div>
+                                        <button onClick={() => handleRemoveFromQuote(i.id)} className="text-red-500 text-sm">Remove</button>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-1 text-xs text-gray-700">
+                                        <div><span className="font-semibold">Per exp (quoted):</span> {i.perExp.quoted.toFixed(2)} h</div>
+                                        <div><span className="font-semibold">Group quoted:</span> {i.quotedTotal.toFixed(2)} h</div>
+                                        <div><span className="font-semibold">Group raw:</span> {i.totals.grandRaw.toFixed(2)} h</div>
+                                        <div><span className="font-semibold">Beam/Setup/Source:</span> {i.totals.irr.toFixed(2)}/{i.totals.setup.toFixed(2)}/{i.totals.source.toFixed(2)} h</div>
+                                    </div>
+                                </div>
+                            ))}
+                            <div className="pt-2 font-bold text-gray-900 flex justify-between">
+                                <span>Total quoted hours (queue)</span>
+                                <span>{displayTotals.grandTotal.toFixed(2)} h</span>
+                            </div>
+                        </div>
+                    )}
+                    </div>
+                </div>
+            </div>
+        );
+
+        const renderMC2 = () => (
+             <div className="card p-6 border-l-4 border-indigo-500">
+                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">MC2 Characterization Estimator</h2>
+                        <p className="text-sm text-gray-500">Post-irradiation characterization and sample preparation hours.</p>
+                    </div>
+                    {/* Safety Factor Toggle */}
+                    <div className="flex items-center gap-2 bg-indigo-50 p-2 rounded-lg border border-indigo-200">
+                        <label className="text-xs font-semibold text-indigo-900 uppercase">Apply Quote Safety Factor? (x{safetyFactor})</label>
+                        <input 
+                            type="checkbox" 
+                            checked={applySafetyToMc2}
+                            onChange={(e) => setApplySafetyToMc2(e.target.checked)}
+                            className="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500"
+                        />
+                    </div>
+                </div>
+
+                <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100 flex flex-col md:flex-row gap-6 items-center mb-8">
+                    <div className="flex-grow">
+                        <label className="text-sm font-bold text-indigo-900 uppercase tracking-wide block mb-2">Total Number of Samples</label>
+                        <div className="flex gap-2">
+                            <input 
+                                type="number" min="1" 
+                                value={mc2Data.numSamples} 
+                                onChange={(e) => updateMc2(null, 'numSamples', Math.max(1, parseInt(e.target.value) || 0))}
+                                className="border border-indigo-300 rounded p-2 w-32 focus:ring-2 focus:ring-indigo-500 outline-none"
+                            />
+                            {calculatedTotalSamples > 0 && calculatedTotalSamples !== mc2Data.numSamples && (
+                                <button 
+                                    onClick={() => updateMc2(null, 'numSamples', calculatedTotalSamples)}
+                                    className="text-xs bg-indigo-200 text-indigo-800 px-3 py-2 rounded hover:bg-indigo-300 transition-colors"
+                                >
+                                    Sync to Calculated Count ({calculatedTotalSamples})
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex gap-8 text-indigo-900">
+                        <div className="text-center">
+                            <span className="block text-xs uppercase font-bold text-indigo-500">Instrument Hrs</span>
+                            <span className="block text-2xl font-bold">{mc2Results.instrumentHours.toFixed(1)}</span>
+                        </div>
+                        <div className="text-center">
+                            <span className="block text-xs uppercase font-bold text-indigo-500">Staff Hrs</span>
+                            <span className="block text-2xl font-bold">{mc2Results.staffHours.toFixed(1)}</span>
+                        </div>
+                        <div className="text-center">
+                            <span className="block text-xs uppercase font-bold text-indigo-500">Service Hrs</span>
+                            <span className="block text-2xl font-bold">{mc2Results.serviceHours.toFixed(1)}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                {/* Service Activities */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-gray-800">Additional Service Activities</h3>
+                    </div>
+                    <div className="space-y-3">
+                    <div className="input-group">
+                        <label>Total Service Hours (Flat)</label>
+                        <input
+                        type="number"
+                        value={mc2Data.service ? mc2Data.service.hours : 0}
+                        onChange={(e) => updateMc2('service', 'hours', parseFloat(e.target.value) || 0)}
+                        />
+                    </div>
+                    <p className="text-xs text-gray-500 italic">
+                        Use for planned staff-only service time (instrument setup, troubleshooting, special workflows).
+                    </p>
+                    </div>
+                </div>
+
+                {/* FIB */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                        <input
+                        type="checkbox"
+                        checked={mc2Data.fib.enabled}
+                        onChange={(e) => updateMc2('fib', 'enabled', e.target.checked)}
+                        className="w-5 h-5 text-indigo-600 rounded"
+                        />
+                        <h3 className="font-bold text-gray-800">FIB Sample Prep</h3>
+                    </div>
+                    </div>
+
+                    {mc2Data.fib.enabled && (
+                    <div className="space-y-4 pl-7">
+                        <div>
+                        <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Liftout Type</label>
+                        <div className="flex gap-3">
+                            <button
+                            onClick={() => updateMc2('fib', 'type', 'targeted')}
+                            className={`flex-1 py-2 px-3 rounded text-sm border ${mc2Data.fib.type === 'targeted'
+                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                : 'bg-white text-gray-700 border-gray-300'}`}
+                            >
+                            Targeted (8h)
+                            </button>
+                            <button
+                            onClick={() => updateMc2('fib', 'type', 'random')}
+                            className={`flex-1 py-2 px-3 rounded text-sm border ${mc2Data.fib.type === 'random'
+                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                : 'bg-white text-gray-700 border-gray-300'}`}
+                            >
+                            Random (4h)
+                            </button>
+                        </div>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                        <label className="text-sm font-medium text-gray-700">Operator:</label>
+                        <Toggle
+                            value={mc2Data.fib.operator}
+                            onChange={(v) => updateMc2('fib', 'operator', v)}
+                            options={[{ val: 'user', label: 'Trained User' }, { val: 'staff', label: 'MC2 Staff' }]}
+                        />
+                        </div>
+
+                        <p className="text-xs text-gray-500 italic border-t pt-2">
+                        Note: Targeted prep typically produces 1–2 lamella.
+                        </p>
+                    </div>
+                    )}
+                </div>
+
+                {/* TEM */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                        <input
+                        type="checkbox"
+                        checked={mc2Data.tem.enabled}
+                        onChange={(e) => updateMc2('tem', 'enabled', e.target.checked)}
+                        className="w-5 h-5 text-indigo-600 rounded"
+                        />
+                        <h3 className="font-bold text-gray-800">TEM / Microscopy</h3>
+                    </div>
+                    </div>
+
+                    {mc2Data.tem.enabled && (
+                    <div className="space-y-4 pl-7">
+                        <div className="input-group">
+                        <label>Hours per Sample</label>
+                        <input
+                            type="number"
+                            value={mc2Data.tem.hours}
+                            onChange={(e) => updateMc2('tem', 'hours', parseFloat(e.target.value) || 0)}
+                        />
+                        <p className="text-xs text-gray-500 mt-1">Typical: 4–6 h/sample</p>
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                        <label className="text-sm font-medium text-gray-700">Operator:</label>
+                        <Toggle
+                            value={mc2Data.tem.operator}
+                            onChange={(v) => updateMc2('tem', 'operator', v)}
+                            options={[{ val: 'user', label: 'Trained User' }, { val: 'staff', label: 'MC2 Staff' }]}
+                        />
+                        </div>
+                    </div>
+                    )}
+                </div>
+
+                {/* EBSD */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                        <input
+                        type="checkbox"
+                        checked={mc2Data.ebsd.enabled}
+                        onChange={(e) => updateMc2('ebsd', 'enabled', e.target.checked)}
+                        className="w-5 h-5 text-indigo-600 rounded"
+                        />
+                        <h3 className="font-bold text-gray-800">EBSD</h3>
+                    </div>
+                    </div>
+
+                    {mc2Data.ebsd.enabled && (
+                    <div className="space-y-4 pl-7">
+                        <div className="input-group">
+                        <label>Hours per Sample</label>
+                        <input
+                            type="number"
+                            value={mc2Data.ebsd.hours}
+                            onChange={(e) => updateMc2('ebsd', 'hours', parseFloat(e.target.value) || 0)}
+                        />
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                        <label className="text-sm font-medium text-gray-700">Operator:</label>
+                        <Toggle
+                            value={mc2Data.ebsd.operator}
+                            onChange={(v) => updateMc2('ebsd', 'operator', v)}
+                            options={[{ val: 'user', label: 'Trained User' }, { val: 'staff', label: 'MC2 Staff' }]}
+                        />
+                        </div>
+                    </div>
+                    )}
+                </div>
+
+                {/* Nanoindentation */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                        <input
+                        type="checkbox"
+                        checked={mc2Data.nano.enabled}
+                        onChange={(e) => updateMc2('nano', 'enabled', e.target.checked)}
+                        className="w-5 h-5 text-indigo-600 rounded"
+                        />
+                        <h3 className="font-bold text-gray-800">Nanoindentation</h3>
+                    </div>
+                    </div>
+
+                    {mc2Data.nano.enabled && (
+                    <div className="space-y-4 pl-7">
+                        <div className="input-group">
+                        <label>Hours per Sample</label>
+                        <input
+                            type="number"
+                            value={mc2Data.nano.hours}
+                            onChange={(e) => updateMc2('nano', 'hours', parseFloat(e.target.value) || 0)}
+                        />
+                        </div>
+
+                        <div className="flex justify-between items-center">
+                        <label className="text-sm font-medium text-gray-700">Operator:</label>
+                        <Toggle
+                            value={mc2Data.nano.operator}
+                            onChange={(v) => updateMc2('nano', 'operator', v)}
+                            options={[{ val: 'user', label: 'Trained User' }, { val: 'staff', label: 'MC2 Staff' }]}
+                        />
+                        </div>
+                    </div>
+                    )}
+                </div>
+
+                {/* Totals card (nice to have; matches older feel) */}
+                <div className="lg:col-span-2 bg-white border border-indigo-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center">
+                    <div>
+                        <h3 className="font-bold text-indigo-900">MC2 Totals</h3>
+                        <p className="text-xs text-gray-500">
+                        Instrument + Staff (+ Service) {applySafetyToMc2 ? `(safety x${safetyFactor} applied)` : "(no safety factor)"}
+                        </p>
+                    </div>
+                    <div className="text-right">
+                        <div className="text-sm text-gray-600">Instrument: <span className="font-bold text-indigo-800">{mc2Results.instrumentHours.toFixed(2)} h</span></div>
+                        <div className="text-sm text-gray-600">Staff: <span className="font-bold text-indigo-800">{mc2Results.staffHours.toFixed(2)} h</span></div>
+                        <div className="text-sm text-gray-600">Service: <span className="font-bold text-indigo-800">{mc2Results.serviceHours.toFixed(2)} h</span></div>
+                        <div className="text-lg font-bold text-indigo-900 mt-1">Total: {mc2Results.total.toFixed(2)} h</div>
+                    </div>
+                    </div>
+                </div>
+
+                </div>
+
+            </div>
+        );
+
+        // ... (Keep existing Database UI) ...
+        const renderDatabase = () => (
+             <div className="card p-6">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold">Cathode / Ion Source Database</h2>
+                    <button onClick={() => { const newId = Math.max(...cathodes.map(c => c.id)) + 1; setCathodes([...cathodes, { id: newId, name: 'New Ion', type: 'solid', life: 100, defaultRate: 1e-4 }]); }} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"><Icon name="plus" size={16} /> Add Ion</button>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead className="bg-gray-50 text-gray-600 uppercase">
+                            <tr>
+                                <th className="px-4 py-2 text-left">Ion Name</th>
+                                <th className="px-4 py-2 text-left">Type</th>
+                                <th className="px-4 py-2 text-left">Limit (h)</th>
+                                <th className="px-4 py-2 text-left">Default Rate</th>
+                                <th className="px-4 py-2 text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                            {cathodes.map((c, idx) => (
+                                <tr key={c.id}>
+                                    <td className="px-4 py-2"><input type="text" value={c.name} onChange={(e) => { const n=[...cathodes]; n[idx].name=e.target.value; setCathodes(n); }} className="border rounded px-2 py-1 w-full"/></td>
+                                    <td className="px-4 py-2"><select value={c.type} onChange={(e) => { const n=[...cathodes]; n[idx].type=e.target.value; if(e.target.value==='gas')n[idx].life=Infinity; setCathodes(n); }} className="border rounded px-2 py-1 w-full"><option value="gas">Gas</option><option value="solid">Solid</option></select></td>
+                                    <td className="px-4 py-2"><input type="number" value={c.life===Infinity?'':c.life} placeholder="∞" disabled={c.type==='gas'} onChange={(e) => { const n=[...cathodes]; n[idx].life=parseFloat(e.target.value)||0; setCathodes(n); }} className="border rounded px-2 py-1 w-full"/></td>
+                                    <td className="px-4 py-2"><input type="number" step="1e-5" value={c.defaultRate||1e-4} onChange={(e) => { const n=[...cathodes]; n[idx].defaultRate=parseFloat(e.target.value)||0; setCathodes(n); }} className="border rounded px-2 py-1 w-full"/></td>
+                                    <td className="px-4 py-2 text-right"><button onClick={() => setCathodes(cathodes.filter(x => x.id !== c.id))} className="text-red-500"><Icon name="trash" size={18}/></button></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+
+        return (
+            <div className="max-w-7xl mx-auto p-4 md:p-8">
+                <header className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4 bg-umblue p-4 rounded-lg text-white">
+                    <div className="flex items-center gap-4">
+                        
+                        <div>
+                            <h1 className="text-3xl font-bold flex items-center gap-3">
+                                MIBL Experiment Calculator
+                            </h1>
+                            <p className="text-gray-300 mt-1">Hours analysis and quoting tool for Ion Beam Laboratory experiments.</p>
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                        <div className="flex bg-white rounded-lg p-1 shadow-sm border">
+                            <button onClick={() => setActiveTab('calculator')} className={`px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors ${activeTab === 'calculator' ? 'bg-ummaize text-umblue' : 'text-gray-600 hover:bg-gray-50'}`}>
+                                <Icon name="settings" size={16} /> Calculator
+                            </button>
+                            <button onClick={() => setActiveTab('mc2')} className={`px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors ${activeTab === 'mc2' ? 'bg-ummaize text-umblue' : 'text-gray-600 hover:bg-gray-50'}`}>
+                                <Icon name="microscope" size={16} /> MC2 Char.
+                            </button>
+                            <button onClick={() => setActiveTab('quote')} className={`px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors ${activeTab === 'quote' ? 'bg-ummaize text-umblue' : 'text-gray-600 hover:bg-gray-50'}`}>
+                                <Icon name="file-text" size={16} /> Quote & Rates
+                            </button>
+                            <button onClick={() => setActiveTab('database')} className={`px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors ${activeTab === 'database' ? 'bg-ummaize text-umblue' : 'text-gray-600 hover:bg-gray-50'}`}>
+                                <Icon name="database" size={16} /> Cathode DB
+                            </button>
+                        </div>
+                    </div>
+                </header>
+
+                {activeTab === 'calculator' && renderCalculator()}
+                {activeTab === 'mc2' && renderMC2()}
+                {activeTab === 'quote' && renderQuote()}
+                {activeTab === 'database' && renderDatabase()}
+
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+
+</script>
+
+</body>
+</html>
