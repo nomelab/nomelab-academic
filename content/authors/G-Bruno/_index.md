@@ -15,7 +15,7 @@ interests:
 - Nuclear Materials
 - Advanced Reactor Design
 - Machine Learning/Artificial Intelligence
-title: Gabriella Bruno
+title: Dr. Gabriella Bruno
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"
@@ -31,7 +31,7 @@ social:
   link: 'mailto:gbruno@umich.edu'
 superuser: false
 user_groups:
-- Grad Students
+- Alumni
 ---
 
 Gabriella Bruno is a graduate student in the Nuclear Engineering and Radiological Sciences department at the University of Michigan with interests in advanced reactor materials and design along with the intersection of artificial intelligence within the nuclear industry. Gabriella conducts research on quantifying error and bias in the labelling of irradiation induced defects with special focus on cavities. Ms. Bruno has interned with BWX Technologies, NuScale Power, and Theia Scientific, LLC. Gabriella received her M.S. from the University of Michigan in 2021 and B.S. from Rensselear Polytechnic Institute in Nuclear Engineering in 2019.

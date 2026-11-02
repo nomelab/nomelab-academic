@@ -19,7 +19,7 @@ interests:
 - Characterization
 - Advanced Nuclear Materials
 - Computational Modeling and Simulations
-title: Dr. Mackenzie Warwick
+title: Prof. Mackenzie Warwick
 organizations:
 - name: Nuclear Engineering and Radiological Sciences
   url: "https://ners.engin.umich.edu/"
