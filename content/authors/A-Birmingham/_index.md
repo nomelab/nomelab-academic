@@ -28,7 +28,7 @@ social:
   link: 'mailto:alexbi@umich.edu'
 superuser: false
 user_groups:
-- Undergraduates
+- Alumni
 ---
 
 I am an undergraduate studying physics at the University of Michigan. I am interested in doing research at the frontiers of nuclear physics, particular in nuclear reactions, including computational applications of the sort I work with within NOME. I hope to translate the technical skills I develop in this research to future endeavors in the field of nuclear physics.
