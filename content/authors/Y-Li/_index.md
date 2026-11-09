@@ -33,7 +33,7 @@ social:
   link: 'mailto:uhan@umich.edu'
 superuser: false
 user_groups:
-- alumni
+- Alumni
 ---
 
 Yuhan graduated in 2026 and now works at Applied Materials.
