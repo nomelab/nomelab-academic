@@ -36,4 +36,4 @@ user_groups:
 - alumni
 ---
 
-
+Yuhan graduated in 2026 and now works at Applied Materials.
