@@ -4,12 +4,12 @@ authors:
 bio: My research interests include Radiation-induced Defect Evolution, Novel Materials in Extreme Environment, Advanced Characterization, and Fusion.
 education:
   courses:
-  - course: BS in Materials Physics
-    institution: University of Science and Technology Beijing
-    year: 2022
   - course: MS in Materials Science and Engineering
     institution: University of Michigan
     year: 2023
+  - course: BS in Materials Physics
+    institution: University of Science and Technology Beijing
+    year: 2022
 email: "lfzhou@umich.edu"
 interests:
 - Radiation-induced Defect Evolution
@@ -23,6 +23,7 @@ organizations:
 - name: University of Michigan
   url: "https://umich.edu/"
 role: Graduate Student
+social:
 - icon: linkedin-in
   icon_pack: fab
   link: https://www.linkedin.com/in/lingfeng-zhou
