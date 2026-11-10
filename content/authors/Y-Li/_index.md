@@ -17,7 +17,7 @@ email: "uhan@umich.edu"
 interests:
 - Radiation effects
 - Materials characterization
-title: Yuhan Li
+title: Dr. Yuhan Li
 organizations:
 - name: Materials Science and Engineering
   url: "https://mse.engin.umich.edu/"
