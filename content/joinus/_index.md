@@ -26,7 +26,7 @@ The Nuclear Engineering and Radiological Sciences Graduate Program is consistent
 
 <strong><u>Frequently Asked Questions from Prospective Graduate Students</strong></u><br>
 <strong>Q:</strong> <i>Are you taking on new graduate students in the Fall?</i><br>
-<strong>A:</strong> Yes! We are looking for 1 graduate student to start in the Fall 2023 term.
+<strong>A:</strong> Maybe; funding for starting in Fall 2027 is still being determined as of November 2026. We may be looking for 1 graduate student to start in Fall 2027. 
 
 <strong>Q:</strong> <i>What departments do the group members come from?</i><br>
 <strong>A:</strong> The majority of our PhD students come with a background in Nuclear Engineering or Materials Science \& Engineering. However, due to the interdisciplinary nature of our research, we also have graduate and undergraduate students from Mechanical Engineering, Electrical Engineering, Physics, and Computer Science.
